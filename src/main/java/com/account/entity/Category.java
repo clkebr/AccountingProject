@@ -8,10 +8,12 @@ import javax.persistence.*;
 @Entity
 @Data @NoArgsConstructor
 @Table(name = "categories")
-public class Category extends BaseEntity{
+public class Category extends BaseEntity {
 
-    String description;
+
+    private String description;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "company_id")
-    Company company;
+    @JoinColumn(name = "company_id")
+    private Company company;
 }

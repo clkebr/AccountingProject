@@ -11,5 +11,5 @@ import javax.persistence.Table;
 @Data
 @Table(name = "roles")
 public class Role extends BaseEntity{
-    String description;
+   private String description;
 }

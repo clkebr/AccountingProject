@@ -11,14 +11,14 @@ import javax.persistence.*;
 @Table(name = "products")
 public class Product extends BaseEntity{
 
-    String name;
-    int quantityInStock;
-    int lowLimitAlert;
+    private String name;
+    private int quantityInStock;
+    private int lowLimitAlert;
 
     @Enumerated(EnumType.STRING)
-    ProductUnit productUnit;
+    private ProductUnit productUnit;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name ="category" )
-    Category category;
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

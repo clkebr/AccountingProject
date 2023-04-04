@@ -13,24 +13,28 @@ import java.time.LocalDate;
 @Table(name = "invoices")
 public class Invoice extends BaseEntity{
 
-    String invoiceNo;
 
-    @Enumerated(EnumType.STRING)
-    InvoiceStatus invoiceStatus;
-
-    @Enumerated(EnumType.STRING)
-    InvoiceType invoiceType;
 
     @Column(columnDefinition = "DATE")
-    LocalDate date;
+    private LocalDate date;
+
+    private String invoiceNo;
+
+    @Enumerated(EnumType.STRING)
+    private InvoiceStatus invoiceStatus;
+
+    @Enumerated(EnumType.STRING)
+    private InvoiceType invoiceType;
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_vendor_id")
-    ClientVendor clientVendor;
+    private ClientVendor clientVendor;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    Company company;
+    private Company company;
 
 
 }

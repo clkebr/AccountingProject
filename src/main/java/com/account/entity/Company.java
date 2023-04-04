@@ -11,12 +11,18 @@ import javax.persistence.*;
 @Table(name = "companies")
 public class Company extends BaseEntity{
     @Column(unique = true)
-    String title;
-    String phone;
-    String website;
-    CompanyStatus companyStatus;
+    private String title;
+
+    private String phone;
+
+    private String website;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name ="address_id")
-    Address address;
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @Enumerated(EnumType.STRING)
+    private CompanyStatus companyStatus;
+
+
 }

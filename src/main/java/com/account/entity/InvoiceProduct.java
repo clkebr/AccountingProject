@@ -11,17 +11,22 @@ import java.math.BigDecimal;
 @Table(name = "invoice_products")
 public class InvoiceProduct extends BaseEntity{
 
-    int quantity;
-    BigDecimal price;
-    int tax;
-    BigDecimal profitLoss;
-    int remainingQty;
+    private int quantity;
+
+    private BigDecimal price;
+
+    private int tax;
+
+    private BigDecimal profitLoss;
+
+    @Column(name = "remaining_quantity")
+    private int remainingQty;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "invoice_id")
-    Invoice invoice;
+    private Invoice invoice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    Product  product;
+    private Product product;
 }

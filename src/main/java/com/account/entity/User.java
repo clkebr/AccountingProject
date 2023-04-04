@@ -8,23 +8,25 @@ import javax.persistence.*;
 
 @Entity
 @Data @NoArgsConstructor
-@Table(name = "roles")
+@Table(name = "users")
 public class User extends BaseEntity{
 
     @Column(unique = true)
-    String username;
+    private String username;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    String password;
-    String firstname;
-    String lastname;
-    String phone;
-    boolean enabled;
+    private String password;
+    private String firstname;
+    private String lastname;
+    private String phone;
+
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     Role role;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     Company company;
+
+    private boolean enabled;
 }
