@@ -1,4 +1,9 @@
 package com.account.service;
 
-public interface AddressService {
+import com.account.dto.AddressDto;
+
+import java.util.List;
+
+public interface AddressService extends CrudService<AddressDto, Long> {
+    List<String> getAllCountries();
 }

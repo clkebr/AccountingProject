@@ -1,6 +1,7 @@
 package com.account.entity;
 
 import com.account.enums.CompanyStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 
 @Entity
 @Data @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "companies")
 public class Company extends BaseEntity{
     @Column(unique = true)
@@ -17,7 +19,7 @@ public class Company extends BaseEntity{
 
     private String website;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "address_id")
     private Address address;
 
