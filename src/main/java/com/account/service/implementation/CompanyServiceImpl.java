@@ -61,16 +61,6 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public void deleteById(Long aLong) {
-
-    }
-
-    @Override
-    public void update(CompanyDto dto) {
-
-    }
-
-    @Override
     public void updateCompany(String id, CompanyDto companyDto) {
 
         Company companyToBeSaved = mapperUtil.convertToType(companyDto, new Company());
