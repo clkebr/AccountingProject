@@ -31,30 +31,50 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByUsername(String username) {
-        return mapperUtil.convertToType(userRepository.findByUsername(username),new UserDto()) ;
+        UserDto userDto = mapperUtil.convertToType(userRepository.findByUsername(username), new UserDto());
+
+        if (isAdmin(userDto)) userDto.setIsOnlyAdmin(true);
+
+        return userDto;
+
     }
 
     @Override
     public List<UserDto> findAll() {
-        List<User> userList = null;
-        if (securityService.getLoggedInUser().getRole().getId() == 1){
-            userList = userRepository.findAllByRoleDescription("Admin");
 
-            return  userList.stream().map(entity->mapperUtil.convertToType(entity,new UserDto())).collect(Collectors.toList());
-        } else
-            if (securityService.getLoggedInUser().getRole().getId() == 2){
-                userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
-            }
-        assert userList != null;
-        System.out.println("userList = " + userList);
-        return  userList.stream().map(entity->mapperUtil.convertToType(entity,new UserDto())).collect(Collectors.toList());
+        List<User> userList;
 
+        if (isCurrentUserRoot()) {
+            userList = userRepository.findAllByRoleDescriptionOrderByCompanyTitleAsc("Admin");
+        } else {
+            userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
+        }
+
+        return userList.stream()
+                .map(entity -> {
+                    UserDto dto = mapperUtil.convertToType(entity, new UserDto());
+                    dto.setIsOnlyAdmin(isAdmin(dto));
+                    return dto;
+                })
+                .collect(Collectors.toList());
 
     }
 
+    private Boolean isAdmin(UserDto userDto) {
+        return userDto.getRole().getDescription().equals("Admin");
+    }
+
+    private boolean isCurrentUserRoot() {
+        return securityService.getLoggedInUser().getRole().getId() == 1;
+    }
+
+
     @Override
     public UserDto findById(Long id) {
-        return mapperUtil.convertToType(userRepository.findById(id), new UserDto());
+
+        UserDto userDto = mapperUtil.convertToType(userRepository.findById(id), new UserDto());
+        userDto.setIsOnlyAdmin(isAdmin(userDto));
+        return userDto;
     }
 
     @Override

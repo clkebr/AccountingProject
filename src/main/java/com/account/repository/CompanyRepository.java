@@ -12,7 +12,7 @@ public interface CompanyRepository extends JpaRepository<Company,Long> {
 
 
 
-    @Query(value = "SELECT c FROM Company c ORDER BY c.companyStatus")
+    @Query(value = "SELECT c FROM Company c ORDER BY c.companyStatus, c.title")
     List<Company> findAllOrderByCompanyStatus();
 
     Company findByTitle(String title);
