@@ -23,7 +23,6 @@ public class SecurityServiceImpl implements SecurityService {
         this.userService = userService;
     }
 
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -37,5 +36,10 @@ public class SecurityServiceImpl implements SecurityService {
     public UserDto getLoggedInUser() {
         var currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         return userService.findByUsername(currentUsername);
+    }
+
+    @Override
+    public String getLoggedUserCompany() {
+        return this.getLoggedInUser().getCompany().getTitle();
     }
 }

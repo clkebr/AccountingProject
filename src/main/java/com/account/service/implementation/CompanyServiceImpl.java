@@ -50,6 +50,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public List<CompanyDto> findAll() {
+//        id=1 root company
         return companyRepository.findAllOrderByCompanyStatus().stream()
                 .filter(each->each.getId() !=1)
                 .map(each-> mapperUtil.convertToType(each,new CompanyDto())).collect(Collectors.toList());
@@ -58,16 +59,6 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDto findById(Long companyId) {
         return mapperUtil.convertToType(companyRepository.findById(companyId),new CompanyDto());
-    }
-
-    @Override
-    public void deleteById(Long aLong) {
-
-    }
-
-    @Override
-    public void update(CompanyDto dto) {
-
     }
 
     @Override
@@ -96,6 +87,7 @@ public class CompanyServiceImpl implements CompanyService {
     public void deactivateCompanyStatus(Long id) {
        Company company= companyRepository.findById(id).get();
 
+//       todo: deactivate company users as well
        company.setCompanyStatus(CompanyStatus.PASSIVE);
        company.setLastUpdateDateTime(LocalDateTime.now());
 
@@ -108,6 +100,8 @@ public class CompanyServiceImpl implements CompanyService {
 
         company.setCompanyStatus(CompanyStatus.ACTIVE);
         company.setLastUpdateDateTime(LocalDateTime.now());
+
+//        todo: activate company users as well
 
         companyRepository.save(company);
     }

@@ -52,7 +52,7 @@ public class CompanyController {
     @GetMapping("/create")
     public  String createCompany( Model model){
         model.addAttribute("newCompany", new CompanyDto());
-        return "company/company-create";
+        return "redirect:/companies/list";
     }
 
     @PostMapping("/create")
