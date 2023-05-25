@@ -12,4 +12,7 @@ public interface UserService {
     UserDto findById(Long id);
 
     void update(UserDto userdto);
+
+
+    void save(UserDto userDto);
 }

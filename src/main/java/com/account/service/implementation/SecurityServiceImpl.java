@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
@@ -41,5 +43,15 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public String getLoggedUserCompany() {
         return this.getLoggedInUser().getCompany().getTitle();
+    }
+
+    @Override
+    public boolean isCurrentUserRoot() {
+        return getLoggedInUser().getRole().getDescription().equals("Root User");
+    }
+
+    @Override
+    public Optional<Long> getCurrentAuditor() {
+        return Optional.ofNullable(getLoggedInUser().getId());
     }
 }

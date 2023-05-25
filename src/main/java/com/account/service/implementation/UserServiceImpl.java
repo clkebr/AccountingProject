@@ -8,6 +8,7 @@ import com.account.repository.UserRepository;
 import com.account.service.SecurityService;
 import com.account.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,13 @@ public class UserServiceImpl implements UserService {
 
     private final SecurityService securityService;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
         List<User> userList;
 
-        if (isCurrentUserRoot()) {
+        if (securityService.isCurrentUserRoot()) {
             userList = userRepository.findAllByRoleDescriptionOrderByCompanyTitleAsc("Admin");
         } else {
             userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
@@ -64,9 +68,6 @@ public class UserServiceImpl implements UserService {
         return userDto.getRole().getDescription().equals("Admin");
     }
 
-    private boolean isCurrentUserRoot() {
-        return securityService.getLoggedInUser().getRole().getId() == 1;
-    }
 
 
     @Override
@@ -92,4 +93,19 @@ public class UserServiceImpl implements UserService {
         userRepository.save(entity);
 
     }
+
+    @Override
+    public void save(UserDto userDto) {
+        User user = mapperUtil.convertToType(userDto, new User());
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEnabled(true);
+
+        System.out.println("user.getLastUpdateUserId() = " + user.getLastUpdateUserId());
+        System.out.println("user.lastUpdateDateTime = " + user.lastUpdateDateTime);
+
+        userRepository.save(user);
+
+    }
+
+
 }

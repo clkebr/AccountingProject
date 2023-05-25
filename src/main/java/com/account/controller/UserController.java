@@ -47,4 +47,19 @@ public class UserController {
         userService.update(userdto);
         return "redirect:/list";
     }
+
+    @GetMapping("/create")
+    public String create( Model model){
+        model.addAttribute("newUser", new UserDto());
+        model.addAttribute("userRoles", roleService.findRoles());
+        model.addAttribute("companies", companyService.findCompanies());
+        return "/user/user-create";
+    }
+
+    @PostMapping("/create")
+    public  String create(@ModelAttribute("newUser") UserDto userDto){
+        userService.save(userDto);
+
+        return "redirect:/list";
+    }
 }
