@@ -49,12 +49,15 @@ public class CompanyServiceImpl implements CompanyService {
         return mapperUtil.convertToType(companyRepository.findByTitle(dto.getTitle()),new CompanyDto());
     }
 
+
     @Override
     public List<CompanyDto> findCompanies() {
         List<Company> companyList;
 
         if(securityService.isCurrentUserRoot())
-            companyList = companyRepository.findAll();
+            companyList = companyRepository.findAll().stream()
+                    .filter(company -> !company.getTitle().equals("CYDEO"))
+                    .collect(Collectors.toList());
         else {
             companyList = Collections.singletonList(companyRepository.findByTitle(securityService.getLoggedUserCompany()));
 

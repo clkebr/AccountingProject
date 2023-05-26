@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,6 +54,7 @@ public class UserServiceImpl implements UserService {
         }
 
         return userList.stream()
+                .filter(entity-> !entity.getIsDeleted())
                 .map(entity -> {
                     UserDto dto = mapperUtil.convertToType(entity, new UserDto());
                     dto.setIsOnlyAdmin(isAdmin(dto));
@@ -79,16 +79,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(UserDto object) {
+    public void update(UserDto dto) {
 
-        User entity = userRepository.findById(object.getId()).get();
-        entity.setFirstname(object.getFirstname());
-        entity.setLastname(object.getLastname());
-        entity.setPhone(object.getPhone());
-        entity.setUsername(object.getUsername());
-        entity.setPassword(object.getPassword());
-        entity.setRole(mapperUtil.convertToType(object.getRole(), new Role()));
-        entity.setLastUpdateDateTime(LocalDateTime.now());
+        User entity = userRepository.findById(dto.getId()).get();
+        entity.setFirstname(dto.getFirstname());
+        entity.setLastname(dto.getLastname());
+        entity.setPhone(dto.getPhone());
+        entity.setUsername(dto.getUsername());
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        entity.setRole(mapperUtil.convertToType(dto.getRole(), new Role()));
+
 
         userRepository.save(entity);
 
@@ -97,13 +97,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(UserDto userDto) {
         User user = mapperUtil.convertToType(userDto, new User());
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         user.setEnabled(true);
 
-        System.out.println("user.getLastUpdateUserId() = " + user.getLastUpdateUserId());
-        System.out.println("user.lastUpdateDateTime = " + user.lastUpdateDateTime);
-
         userRepository.save(user);
+
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        User byId = userRepository.findById(id).get();
+        byId.setIsDeleted(true);
+        userRepository.save(byId);
 
     }
 

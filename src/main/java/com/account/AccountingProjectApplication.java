@@ -27,9 +27,5 @@ public class AccountingProjectApplication {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    public AuditorAware auditorAware() {
-//        return new AuditorAwareImpl();
-//    }
 
 }
