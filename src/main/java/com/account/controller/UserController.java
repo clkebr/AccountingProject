@@ -36,8 +36,8 @@ public class UserController {
     @GetMapping("/update/{id}")
     public String get(@PathVariable("id") Long id, Model model){
         model.addAttribute("user",userService.findById(id));
-        model.addAttribute("userRoles",roleService.findAll());
-        model.addAttribute("companies",companyService.findAll());
+        model.addAttribute("userRoles",roleService.findRoles());
+        model.addAttribute("companies",companyService.findCompanies());
 
         return "/user/user-update";
     }
@@ -45,6 +45,28 @@ public class UserController {
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable("id") Long id, @ModelAttribute UserDto userdto){
         userService.update(userdto);
-        return "redirect:/list";
+        return "redirect:/users/list";
+    }
+
+    @GetMapping("/create")
+    public String create( Model model){
+        model.addAttribute("newUser", new UserDto());
+        model.addAttribute("userRoles", roleService.findRoles());
+        model.addAttribute("companies", companyService.findCompanies());
+        return "/user/user-create";
+    }
+
+    @PostMapping("/create")
+    public  String create(@ModelAttribute("newUser") UserDto userDto){
+        userService.save(userDto);
+
+        return "redirect:/users/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id){
+       userService.deleteUserById(id);
+
+        return "redirect:/users/list";
     }
 }

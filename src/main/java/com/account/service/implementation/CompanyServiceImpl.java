@@ -11,6 +11,7 @@ import com.account.service.SecurityService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,6 +49,25 @@ public class CompanyServiceImpl implements CompanyService {
         return mapperUtil.convertToType(companyRepository.findByTitle(dto.getTitle()),new CompanyDto());
     }
 
+
+    @Override
+    public List<CompanyDto> findCompanies() {
+        List<Company> companyList;
+
+        if(securityService.isCurrentUserRoot())
+            companyList = companyRepository.findAll().stream()
+                    .filter(company -> !company.getTitle().equals("CYDEO"))
+                    .collect(Collectors.toList());
+        else {
+            companyList = Collections.singletonList(companyRepository.findByTitle(securityService.getLoggedUserCompany()));
+
+        }
+        return companyList.stream()
+                .map(company-> mapperUtil.convertToType(company,new CompanyDto()))
+                .filter(company->company.getId() !=1)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public List<CompanyDto> findAll() {
 //        id=1 root company
@@ -60,7 +80,7 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto findById(Long companyId) {
         return mapperUtil.convertToType(companyRepository.findById(companyId),new CompanyDto());
     }
-
+//todo: change the impl
     @Override
     public void updateCompany(String id, CompanyDto companyDto) {
 

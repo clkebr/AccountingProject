@@ -6,10 +6,13 @@ import com.account.entity.common.UserPrincipal;
 import com.account.repository.UserRepository;
 import com.account.service.SecurityService;
 import com.account.service.UserService;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -22,6 +25,7 @@ public class SecurityServiceImpl implements SecurityService {
         this.userRepository = userRepository;
         this.userService = userService;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,5 +45,29 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public String getLoggedUserCompany() {
         return this.getLoggedInUser().getCompany().getTitle();
+    }
+
+    @Override
+    public boolean isCurrentUserRoot() {
+        return getLoggedInUser().getRole().getDescription().equals("Root User");
+    }
+
+
+    private Long getCurrentUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+            return principal.getId();
+        }
+
+        return null; // Return null if the user ID is not available or not authenticated
+    }
+
+
+    @Override
+    public Optional<Long> getCurrentAuditor() {
+        Long currentUserId =this.getCurrentUserId();
+        return Optional.ofNullable(currentUserId);
     }
 }

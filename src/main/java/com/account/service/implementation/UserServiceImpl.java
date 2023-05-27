@@ -8,9 +8,9 @@ import com.account.repository.UserRepository;
 import com.account.service.SecurityService;
 import com.account.service.UserService;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,10 +23,13 @@ public class UserServiceImpl implements UserService {
 
     private final SecurityService securityService;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.mapperUtil = mapperUtil;
         this.securityService = securityService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -44,13 +47,14 @@ public class UserServiceImpl implements UserService {
 
         List<User> userList;
 
-        if (isCurrentUserRoot()) {
+        if (securityService.isCurrentUserRoot()) {
             userList = userRepository.findAllByRoleDescriptionOrderByCompanyTitleAsc("Admin");
         } else {
             userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
         }
 
         return userList.stream()
+                .filter(entity-> !entity.getIsDeleted())
                 .map(entity -> {
                     UserDto dto = mapperUtil.convertToType(entity, new UserDto());
                     dto.setIsOnlyAdmin(isAdmin(dto));
@@ -64,9 +68,6 @@ public class UserServiceImpl implements UserService {
         return userDto.getRole().getDescription().equals("Admin");
     }
 
-    private boolean isCurrentUserRoot() {
-        return securityService.getLoggedInUser().getRole().getId() == 1;
-    }
 
 
     @Override
@@ -78,18 +79,40 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(UserDto object) {
+    public void update(UserDto dto) {
 
-        User entity = userRepository.findById(object.getId()).get();
-        entity.setFirstname(object.getFirstname());
-        entity.setLastname(object.getLastname());
-        entity.setPhone(object.getPhone());
-        entity.setUsername(object.getUsername());
-        entity.setPassword(object.getPassword());
-        entity.setRole(mapperUtil.convertToType(object.getRole(), new Role()));
-        entity.setLastUpdateDateTime(LocalDateTime.now());
+        User entity = userRepository.findById(dto.getId()).get();
+        entity.setFirstname(dto.getFirstname());
+        entity.setLastname(dto.getLastname());
+        entity.setPhone(dto.getPhone());
+        entity.setUsername(dto.getUsername());
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+        entity.setRole(mapperUtil.convertToType(dto.getRole(), new Role()));
+
 
         userRepository.save(entity);
 
     }
+
+    @Override
+    public void save(UserDto userDto) {
+        User user = mapperUtil.convertToType(userDto, new User());
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        user.setEnabled(true);
+
+        userRepository.save(user);
+
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        User byId = userRepository.findById(id).get();
+        byId.setIsDeleted(true);
+        userRepository.save(byId);
+
+    }
+
+
 }

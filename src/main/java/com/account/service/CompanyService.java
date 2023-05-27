@@ -17,4 +17,6 @@ public interface CompanyService {
     CompanyDto findById(Long id);
 
     CompanyDto save(CompanyDto companyDto);
+
+    List<CompanyDto> findCompanies();
 }
