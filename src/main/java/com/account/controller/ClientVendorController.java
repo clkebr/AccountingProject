@@ -37,9 +37,7 @@ public class ClientVendorController {
 
     @PostMapping("/create")
     public  String postClientVendor(@ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto){
-        System.out.println(clientVendorDto);
         clientVendorService.save(clientVendorDto);
-
         return "redirect:/clientVendors/list";
     }
 
