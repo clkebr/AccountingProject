@@ -8,4 +8,11 @@ public interface ClientVendorService {
     List<ClientVendorDto> findAllByCompany();
 
 
+    void save(ClientVendorDto clientVendorDto);
+
+    ClientVendorDto findById(Long id);
+
+    void updateClientVendor(Long id, ClientVendorDto clientVendorDto);
+
+    void deleteById(Long id);
 }

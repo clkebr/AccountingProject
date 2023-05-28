@@ -34,7 +34,7 @@ public class CompanyController {
     @PostMapping("/update/{id}")
     public  String save(@PathVariable String id, @ModelAttribute("company") CompanyDto companyDto){
         companyService.updateCompany(id,companyDto);
-        return "company/company-update";
+        return "redirect:/companies/list";
     }
     @GetMapping("/deactivate/{id}")
     public  String deactivateStatus(@PathVariable Long id, Model model){

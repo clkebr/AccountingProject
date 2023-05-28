@@ -25,7 +25,7 @@ public class ClientVendor extends BaseEntity{
     private String website;
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
