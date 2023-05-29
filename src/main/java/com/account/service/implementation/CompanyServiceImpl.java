@@ -10,7 +10,6 @@ import com.account.service.CompanyService;
 import com.account.service.SecurityService;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,16 +33,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyDto save(CompanyDto dto) {
         Company company = mapperUtil.convertToType(dto, new Company());
-
         company.setCompanyStatus(CompanyStatus.PASSIVE);
-        company.setInsertDateTime(LocalDateTime.now());
-        company.setLastUpdateDateTime(LocalDateTime.now());
-        company.setInsertUserId(securityService.getLoggedInUser().getId());
-        company.setLastUpdateUserId(securityService.getLoggedInUser().getId());
-        company.getAddress().setLastUpdateDateTime(LocalDateTime.now());
-        company.getAddress().setInsertDateTime(LocalDateTime.now());
-        company.getAddress().setInsertUserId(securityService.getLoggedInUser().getId());
-        company.getAddress().setLastUpdateUserId(securityService.getLoggedInUser().getId());
         companyRepository.save(company);
 
         return mapperUtil.convertToType(companyRepository.findByTitle(dto.getTitle()),new CompanyDto());
@@ -91,15 +81,12 @@ public class CompanyServiceImpl implements CompanyService {
         company.setTitle(companyToBeSaved.getTitle());
         company.setPhone(companyToBeSaved.getPhone());
         company.setWebsite(companyToBeSaved.getWebsite());
-        company.setLastUpdateDateTime(LocalDateTime.now());
-
         company.getAddress().setAddressLine1(companyToBeSaved.getAddress().getAddressLine1());
         company.getAddress().setAddressLine2(companyToBeSaved.getAddress().getAddressLine2());
         company.getAddress().setCity(companyToBeSaved.getAddress().getCity());
         company.getAddress().setState(companyToBeSaved.getAddress().getState());
         company.getAddress().setCountry(companyToBeSaved.getAddress().getCountry());
         company.getAddress().setZipCode(companyToBeSaved.getAddress().getZipCode());
-        company.getAddress().setLastUpdateDateTime(LocalDateTime.now());
         companyRepository.save(company);
     }
 
@@ -109,8 +96,6 @@ public class CompanyServiceImpl implements CompanyService {
 
 //       todo: deactivate company users as well
        company.setCompanyStatus(CompanyStatus.PASSIVE);
-       company.setLastUpdateDateTime(LocalDateTime.now());
-
        companyRepository.save(company);
     }
 
@@ -119,8 +104,6 @@ public class CompanyServiceImpl implements CompanyService {
         Company company= companyRepository.findById(id).get();
 
         company.setCompanyStatus(CompanyStatus.ACTIVE);
-        company.setLastUpdateDateTime(LocalDateTime.now());
-
 //        todo: activate company users as well
 
         companyRepository.save(company);
