@@ -1,9 +1,15 @@
 package com.account.service;
 
-import com.account.entity.Product;
+import com.account.dto.ProductDto;
 
 import java.util.List;
 
 public interface ProductService {
-    List<Product> findProductsByCompanyId(Long categoryId);
+    List<ProductDto> findProductsByCompanyId(Long categoryId);
+
+    List<ProductDto> getProductsByCompany();
+
+    void save(ProductDto productDto);
 }
+
+
