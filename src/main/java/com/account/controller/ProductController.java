@@ -6,10 +6,7 @@ import com.account.service.CategoryService;
 import com.account.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 
@@ -45,4 +42,24 @@ public class ProductController {
         return "redirect:/products/list";
     }
 
+    @GetMapping("/update/{id}")
+    public  String update(@PathVariable Long id, Model model){
+        model.addAttribute("product",productService.findProductById(id));
+        model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+        model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+        return "/product/product-update";
+    }
+
+    @PostMapping("/update/{id}")
+    public  String save(@PathVariable Long id, @ModelAttribute("product") ProductDto productDto){
+        productService.updateProduct(id,productDto);
+        return "redirect:/products/list";
+    }
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") Long id){
+        productService.deleteById(id);
+
+        return "redirect:/products/list";
+    }
 }

@@ -1,13 +1,17 @@
 package com.account.entity;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
-@Data @NoArgsConstructor
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "categories")
 @Where(clause = "is_deleted=false")
 public class Category extends BaseEntity {

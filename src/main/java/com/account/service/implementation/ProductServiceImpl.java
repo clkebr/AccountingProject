@@ -48,15 +48,33 @@ public class ProductServiceImpl implements ProductService {
 
                 )
                 .collect(Collectors.toList());
-
-
-
     }
 
     @Override
-    public void save(ProductDto productDto) {
+    public ProductDto save(ProductDto productDto) {
+        productDto.getCategory().setCompanyDto(securityService.getLoggedInUser().getCompany());
         Product product = mapperUtil.convertToType(productDto, new Product());
         product.setQuantityInStock(0);
+       return mapperUtil.convertToType( productRepository.save(product),new ProductDto());
+    }
+
+    @Override
+    public ProductDto findProductById(Long id) {
+        return mapperUtil.convertToType(productRepository.findById(id),new ProductDto());
+    }
+
+    @Override
+    public ProductDto updateProduct(Long id, ProductDto productDto) {
+        Product product = productRepository.findById(id).get();
+        product.setProductUnit(productDto.getProductUnit());
+        product.setLowLimitAlert(productDto.getLowLimitAlert());
+        return mapperUtil.convertToType(productRepository.save(product),new ProductDto());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Product product = productRepository.findById(id).get();
+        product.setIsDeleted(true);
         productRepository.save(product);
     }
 

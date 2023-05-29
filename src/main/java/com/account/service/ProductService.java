@@ -9,7 +9,13 @@ public interface ProductService {
 
     List<ProductDto> getProductsByCompany();
 
-    void save(ProductDto productDto);
+    ProductDto save(ProductDto productDto);
+
+    ProductDto findProductById(Long id);
+
+    ProductDto updateProduct(Long id, ProductDto productDto);
+
+    void deleteById(Long id);
 }
 
 
