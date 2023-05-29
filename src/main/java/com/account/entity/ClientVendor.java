@@ -1,14 +1,20 @@
 package com.account.entity;
 
 import com.account.enums.ClientVendorType;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
-@Data @NoArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter @Setter
 @Table(name = "clients_vendors")
+@Where(clause = "is_deleted=false")
 public class ClientVendor extends BaseEntity{
 
     @Enumerated(EnumType.STRING)
@@ -19,7 +25,7 @@ public class ClientVendor extends BaseEntity{
     private String website;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
 
