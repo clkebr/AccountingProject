@@ -1,7 +1,9 @@
 package com.account.service.implementation;
 
+import com.account.dto.ClientVendorDto;
 import com.account.dto.InvoiceDto;
 import com.account.entity.Invoice;
+import com.account.enums.ClientVendorType;
 import com.account.enums.InvoiceType;
 import com.account.mapper.MapperUtil;
 import com.account.repository.InvoiceRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,6 +52,41 @@ public class InvoiceServiceImpl implements InvoiceService {
 
                     return invoiceDto;
                 }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ClientVendorDto> getAllByCompanyAndType(ClientVendorType vendor) {
+        Long id = securityService.getLoggedInUser().getCompany().getId();
+        return invoiceRepository.findAllByCompanyId(id)
+                .stream()
+                .map(Invoice::getClientVendor)
+                .distinct()
+                .filter(clientVendor -> clientVendor.getClientVendorType().equals(vendor))
+                .map(clientVendor->mapperUtil.convertToType(clientVendor, new ClientVendorDto()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public InvoiceDto createInvoiceDto(InvoiceType invoiceType) {
+        InvoiceDto invoiceDto = new InvoiceDto();
+        invoiceDto.setInvoiceNo(invoiceNoGenerator(invoiceType));
+        invoiceDto.setDate(LocalDate.now());
+        return invoiceDto;
+    }
+
+    private String invoiceNoGenerator(InvoiceType invoiceType) {
+        Long companyId = securityService.getLoggedInUser().getCompany().getId();
+        List<Invoice> invoiceList = invoiceRepository.findAllByCompanyIdAndInvoiceType(companyId, invoiceType);
+        if (invoiceList.size() == 0) {
+            return invoiceType.name().charAt(0) + "-001";
+        }
+        Invoice lastCreatedInvoiceOfTheCompany = invoiceList.stream()
+                .max(Comparator.comparing(Invoice::getInsertDateTime))
+                .get();
+
+        int newOrder = Integer.parseInt(lastCreatedInvoiceOfTheCompany.getInvoiceNo().substring(2)) + 1;
+        return invoiceType.name().charAt(0) + "-" + String.format("%03d", newOrder);
+
     }
 
     private BigDecimal getInvoiceTotalPrice(Long id) {
