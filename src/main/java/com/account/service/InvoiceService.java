@@ -13,4 +13,8 @@ public interface InvoiceService {
     List<ClientVendorDto> getAllByCompanyAndType(ClientVendorType vendor);
 
     InvoiceDto createInvoiceDto(InvoiceType invoiceType);
+
+    InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType);
+
+    InvoiceDto findInvoiceById(Long id);
 }

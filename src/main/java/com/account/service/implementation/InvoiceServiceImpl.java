@@ -4,6 +4,7 @@ import com.account.dto.ClientVendorDto;
 import com.account.dto.InvoiceDto;
 import com.account.entity.Invoice;
 import com.account.enums.ClientVendorType;
+import com.account.enums.InvoiceStatus;
 import com.account.enums.InvoiceType;
 import com.account.mapper.MapperUtil;
 import com.account.repository.InvoiceRepository;
@@ -71,7 +72,22 @@ public class InvoiceServiceImpl implements InvoiceService {
         InvoiceDto invoiceDto = new InvoiceDto();
         invoiceDto.setInvoiceNo(invoiceNoGenerator(invoiceType));
         invoiceDto.setDate(LocalDate.now());
+        invoiceDto.setCompanyDto(securityService.getLoggedInUser().getCompany());
         return invoiceDto;
+    }
+
+    @Override
+    public InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType) {
+        invoiceDto.setCompanyDto(securityService.getLoggedInUser().getCompany());
+        invoiceDto.setInvoiceType(invoiceType);
+        invoiceDto.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
+        Invoice invoice = mapperUtil.convertToType(invoiceDto, new Invoice());
+        return mapperUtil.convertToType(invoice,invoiceDto);
+    }
+
+    @Override
+    public InvoiceDto findInvoiceById(Long id) {
+        return mapperUtil.convertToType(invoiceRepository.findById(id).get(),new InvoiceDto());
     }
 
     private String invoiceNoGenerator(InvoiceType invoiceType) {

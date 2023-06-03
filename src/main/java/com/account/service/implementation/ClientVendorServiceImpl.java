@@ -68,6 +68,11 @@ public class ClientVendorServiceImpl implements ClientVendorService {
         clientVendor.setIsDeleted(true);
         clientVendorRepository.save(clientVendor);
     }
+
+    @Override
+    public ClientVendorDto findClientVendorById(long id) {
+        return mapperUtil.convertToType(clientVendorRepository.findById(id), new ClientVendorDto());
+    }
 }
 
 

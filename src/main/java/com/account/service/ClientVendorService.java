@@ -15,4 +15,6 @@ public interface ClientVendorService {
     void updateClientVendor(Long id, ClientVendorDto clientVendorDto);
 
     void deleteById(Long id);
+
+    ClientVendorDto findClientVendorById(long parseLong);
 }
