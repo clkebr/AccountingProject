@@ -1,10 +1,12 @@
 package com.account.controller;
 
 import com.account.dto.InvoiceDto;
-import com.account.dto.ProductDto;
+import com.account.dto.InvoiceProductDto;
 import com.account.enums.ClientVendorType;
 import com.account.enums.InvoiceType;
 import com.account.service.InvoiceService;
+import com.account.service.ProductService;
+import com.account.service.SecurityService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +16,14 @@ import org.springframework.web.bind.annotation.*;
 public class PurchaseInvoiceController {
 
     private final InvoiceService invoiceService;
+    private final ProductService productService;
 
-    public PurchaseInvoiceController(InvoiceService invoiceService) {
+    private final SecurityService securityService;
+
+    public PurchaseInvoiceController(InvoiceService invoiceService, ProductService productService, SecurityService securityService) {
         this.invoiceService = invoiceService;
+        this.productService = productService;
+        this.securityService = securityService;
     }
 
 
@@ -32,16 +39,57 @@ public class PurchaseInvoiceController {
         return "/invoice/purchase-invoice-create";
     }
     @PostMapping("/create")
-    public  String postClientVendor(@ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto){
-        invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
-        return "redirect:/purchaseInvoices/list";
+    public  String postPurchaseInvoice(@ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto){
+        InvoiceDto dto = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
+        return "redirect:/purchaseInvoices/update/"+dto.getId();
     }
 
     @GetMapping("/update/{id}")
-    public  String update(@PathVariable("id") Long id, Model model){
+    public  String retrievePurchaseInvoice(@PathVariable("id") Long id, Model model){
+
+        model.addAttribute("newInvoiceProduct", new InvoiceProductDto());
         model.addAttribute("invoice", invoiceService.findInvoiceById(id));
-        model.addAttribute("newInvoiceProduct", new ProductDto());
+        model.addAttribute("products", productService.getProductsByCompany());
+        model.addAttribute("vendors",invoiceService.getAllByCompanyAndType(ClientVendorType.VENDOR));
+        model.addAttribute("invoiceProducts",invoiceService.getInvoiceProductsByInvoiceId(id));
 
         return "/invoice/purchase-invoice-update";
     }
+
+    @PostMapping("/update/{id}")
+    public  String updatePurchaseInvoice( @ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto){
+
+        InvoiceDto dto = invoiceService.updateInvoice(invoiceDto, InvoiceType.PURCHASE);
+
+        return "redirect:/purchaseInvoices/update/"+dto.getId();
+    }
+
+    @GetMapping("/print/{id}")
+    public  String printPurchaseInvoice(@PathVariable("id") Long id, Model model){
+        model.addAttribute("invoice", invoiceService.findInvoiceById(id));
+        model.addAttribute("invoiceProducts",invoiceService.getInvoiceProductsByInvoiceId(id));
+        model.addAttribute("company", securityService.getLoggedInUser().getCompany());
+        return "/invoice/invoice_print";
+    }
+    @GetMapping("/delete/{id}")
+    public String deletePurchaseInvoice(@PathVariable("id") Long id){
+        invoiceService.deleteById(id);
+
+        return "redirect:/purchaseInvoices/list";
+    }
+
+    @PostMapping("/addInvoiceProduct/{id}")
+    public  String addInvoiceProduct(@PathVariable("id") Long id, @ModelAttribute("newInvoiceProduct") InvoiceProductDto invoiceProductDto){
+
+         invoiceService.addInvoiceProduct(id, invoiceProductDto);
+
+        return "redirect:/purchaseInvoices/update/"+id;
+    }
+
+//    @PostMapping("/approve/{id}")
+//    public  String postPurchaseInvoice(@PathVariable("id") Long id,@ModelAttribute("newPurchaseInvoice") InvoiceDto invoiceDto){
+//        InvoiceDto dto = invoiceService.saveInvoice(invoiceDto, InvoiceType.PURCHASE);
+//        return "redirect:/purchaseInvoices/update/"+dto.getId();
+//    }
+//
 }

@@ -2,6 +2,8 @@ package com.account.service.implementation;
 
 import com.account.dto.ClientVendorDto;
 import com.account.dto.InvoiceDto;
+import com.account.dto.InvoiceProductDto;
+import com.account.entity.ClientVendor;
 import com.account.entity.Invoice;
 import com.account.enums.ClientVendorType;
 import com.account.enums.InvoiceStatus;
@@ -27,11 +29,13 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final MapperUtil mapperUtil;
     private final InvoiceProductService invoiceProductService;
 
+
     public InvoiceServiceImpl(SecurityService securityService, InvoiceRepository invoiceRepository, MapperUtil mapperUtil, InvoiceProductService invoiceProductService) {
         this.securityService = securityService;
         this.invoiceRepository = invoiceRepository;
         this.mapperUtil = mapperUtil;
         this.invoiceProductService = invoiceProductService;
+
     }
 
 
@@ -44,7 +48,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .stream()
                 .filter(invoice -> invoice.getInvoiceType().equals(InvoiceType.PURCHASE))
                 .sorted(Comparator.comparing(Invoice::getInvoiceNo)
-                        .thenComparing(Invoice::getDate))
+                        .thenComparing(Invoice::getDate).reversed())
                 .map((Invoice invoice)-> {
                     InvoiceDto invoiceDto = mapperUtil.convertToType(invoice, new InvoiceDto());
                     invoiceDto.setPrice(getInvoiceTotalPrice(invoiceDto.getId()));
@@ -64,6 +68,7 @@ public class InvoiceServiceImpl implements InvoiceService {
                 .distinct()
                 .filter(clientVendor -> clientVendor.getClientVendorType().equals(vendor))
                 .map(clientVendor->mapperUtil.convertToType(clientVendor, new ClientVendorDto()))
+                .sorted(Comparator.comparing(ClientVendorDto::getClientVendorName))
                 .collect(Collectors.toList());
     }
 
@@ -82,12 +87,42 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceDto.setInvoiceType(invoiceType);
         invoiceDto.setInvoiceStatus(InvoiceStatus.AWAITING_APPROVAL);
         Invoice invoice = mapperUtil.convertToType(invoiceDto, new Invoice());
+        invoiceRepository.save(invoice);
         return mapperUtil.convertToType(invoice,invoiceDto);
     }
 
     @Override
     public InvoiceDto findInvoiceById(Long id) {
         return mapperUtil.convertToType(invoiceRepository.findById(id).get(),new InvoiceDto());
+    }
+
+    @Override
+    public List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId) {
+
+        return invoiceProductService.findInvoiceProductByInvoiceId(invoiceId);
+    }
+
+    @Override
+    public InvoiceDto updateInvoice(InvoiceDto invoiceDto, InvoiceType type) {
+        Invoice invoice = invoiceRepository.findById(invoiceDto.getId()).get();
+        ClientVendor clientVendorToBeSaved = mapperUtil.convertToType(invoiceDto.getClientVendor(),new ClientVendor());
+        invoice.setClientVendor(clientVendorToBeSaved);
+       return mapperUtil.convertToType( invoiceRepository.save(invoice), new InvoiceDto());
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        Invoice invoice = invoiceRepository.findById(id).get();
+        invoice.setIsDeleted(true);
+        invoiceRepository.save(invoice);
+    }
+
+    @Override
+    public InvoiceProductDto addInvoiceProduct(Long invoiceId, InvoiceProductDto invoiceProductDto) {
+
+        InvoiceDto invoiceDto = this.findInvoiceById(invoiceId);
+        invoiceProductDto.setInvoice(invoiceDto);
+        return invoiceProductService.saveInvoiceProductDto(invoiceProductDto);
     }
 
     private String invoiceNoGenerator(InvoiceType invoiceType) {

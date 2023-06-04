@@ -1,6 +1,7 @@
 package com.account.service.implementation;
 
 import com.account.dto.InvoiceProductDto;
+import com.account.entity.InvoiceProduct;
 import com.account.mapper.MapperUtil;
 import com.account.repository.InvoiceProductRepository;
 import com.account.service.InvoiceProductService;
@@ -27,6 +28,25 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
                 .stream()
                 .map(each -> mapperUtil.convertToType(each, new InvoiceProductDto()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long id) {
+        return invoiceProductRepository.findAllByInvoiceId(id)
+                .stream()
+                .map(entity->mapperUtil.convertToType(entity, new InvoiceProductDto()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public InvoiceProductDto findInvoiceProductById(long id) {
+        return mapperUtil.convertToType(invoiceProductRepository.findById(id), new InvoiceProductDto());
+    }
+
+    @Override
+    public InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto) {
+        InvoiceProduct save = invoiceProductRepository.save(mapperUtil.convertToType(invoiceProductDto, new InvoiceProduct()));
+        return mapperUtil.convertToType(save, new InvoiceProductDto());
     }
 
 

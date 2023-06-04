@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter @Setter
 public class InvoiceProductDto {
+    private Long id;
 
     private BigDecimal price ;
 

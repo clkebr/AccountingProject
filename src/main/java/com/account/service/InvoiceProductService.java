@@ -7,4 +7,9 @@ import java.util.List;
 public interface InvoiceProductService {
     List<InvoiceProductDto> findByInvoiceId(Long id);
 
+    List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long id);
+
+    InvoiceProductDto findInvoiceProductById(long parseLong);
+
+    InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto);
 }
