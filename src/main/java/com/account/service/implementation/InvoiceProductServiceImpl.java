@@ -63,7 +63,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         return invoiceProductDto;
 
     }
-//todo: check invoiceProductDto´s total whether is is empty or not
+//todo: check invoiceProductDto´s total whether is empty or not
     @Override
     public InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto) {
         InvoiceProduct save = invoiceProductRepository.save(mapperUtil.convertToType(invoiceProductDto, new InvoiceProduct()));
