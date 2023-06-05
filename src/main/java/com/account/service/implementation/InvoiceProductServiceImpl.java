@@ -2,6 +2,8 @@ package com.account.service.implementation;
 
 import com.account.dto.InvoiceProductDto;
 import com.account.entity.InvoiceProduct;
+import com.account.enums.InvoiceStatus;
+import com.account.enums.InvoiceType;
 import com.account.mapper.MapperUtil;
 import com.account.repository.InvoiceProductRepository;
 import com.account.service.InvoiceProductService;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,6 +79,29 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
         invoiceProduct.setIsDeleted(true);
         invoiceProductRepository.save(invoiceProduct);
 
+    }
+
+    //The table should be sorted based on invoice date in descending order
+    @Override
+    public List<InvoiceProductDto> findInvoiceProductByInvoiceStatus(InvoiceStatus status) {
+        return invoiceProductRepository.findAllByInvoiceInvoiceStatus(status)
+                .stream()
+                .sorted(Comparator.comparing(InvoiceProduct::getId).reversed())
+                .map((InvoiceProduct invoiceProduct)->{
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
+                    invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                    return invoiceProductDto;
+                }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<InvoiceProductDto> findInvoiceProductByInvoiceType(InvoiceType type) {
+        return invoiceProductRepository.findAllByInvoiceInvoiceType(type)
+                .stream().map((InvoiceProduct invoiceProduct) -> {
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
+                    invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                    return invoiceProductDto;
+                }).collect(Collectors.toList());
     }
 
 
