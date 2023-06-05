@@ -3,6 +3,7 @@ package com.account.service.implementation;
 import com.account.dto.ClientVendorDto;
 import com.account.dto.InvoiceDto;
 import com.account.dto.InvoiceProductDto;
+import com.account.dto.ProductDto;
 import com.account.entity.ClientVendor;
 import com.account.entity.Invoice;
 import com.account.enums.ClientVendorType;
@@ -12,9 +13,11 @@ import com.account.mapper.MapperUtil;
 import com.account.repository.InvoiceRepository;
 import com.account.service.InvoiceProductService;
 import com.account.service.InvoiceService;
+import com.account.service.ProductService;
 import com.account.service.SecurityService;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -28,14 +31,15 @@ public class InvoiceServiceImpl implements InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final MapperUtil mapperUtil;
     private final InvoiceProductService invoiceProductService;
+    private final ProductService productService;
 
 
-    public InvoiceServiceImpl(SecurityService securityService, InvoiceRepository invoiceRepository, MapperUtil mapperUtil, InvoiceProductService invoiceProductService) {
+    public InvoiceServiceImpl(SecurityService securityService, InvoiceRepository invoiceRepository, MapperUtil mapperUtil, InvoiceProductService invoiceProductService, ProductService productService) {
         this.securityService = securityService;
         this.invoiceRepository = invoiceRepository;
         this.mapperUtil = mapperUtil;
         this.invoiceProductService = invoiceProductService;
-
+        this.productService = productService;
     }
 
 
@@ -93,7 +97,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDto findInvoiceById(Long id) {
-        return mapperUtil.convertToType(invoiceRepository.findById(id).get(),new InvoiceDto());
+        return mapperUtil.convertToType(invoiceRepository.findById(id).orElseThrow(),new InvoiceDto());
     }
 
     @Override
@@ -104,7 +108,7 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public InvoiceDto updateInvoice(InvoiceDto invoiceDto, InvoiceType type) {
-        Invoice invoice = invoiceRepository.findById(invoiceDto.getId()).get();
+        Invoice invoice = invoiceRepository.findById(invoiceDto.getId()).orElseThrow();
         ClientVendor clientVendorToBeSaved = mapperUtil.convertToType(invoiceDto.getClientVendor(),new ClientVendor());
         invoice.setClientVendor(clientVendorToBeSaved);
        return mapperUtil.convertToType( invoiceRepository.save(invoice), new InvoiceDto());
@@ -112,8 +116,12 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     @Override
     public void deleteById(Long id) {
-        Invoice invoice = invoiceRepository.findById(id).get();
+        Invoice invoice = invoiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Invoice not found"));
         invoice.setIsDeleted(true);
+
+        invoiceProductService.findByInvoiceId(invoice.getId())
+                .forEach(invoiceProductDto -> invoiceProductService.deleteInvoiceProductById(invoiceProductDto.getId()));
+
         invoiceRepository.save(invoice);
     }
 
@@ -124,6 +132,55 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceProductDto.setInvoice(invoiceDto);
         return invoiceProductService.saveInvoiceProductDto(invoiceProductDto);
     }
+
+    @Override
+    public void removeInvoiceProductById(Long invoiceProductId) {
+        invoiceProductService.deleteInvoiceProductById(invoiceProductId);
+
+    }
+
+    @Override
+    public void approvePurchaseInvoice(Long id) {
+        Invoice invoice = invoiceRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Invoice is not found"));
+        invoice.setInvoiceStatus(InvoiceStatus.APPROVED);
+        invoice.setDate(LocalDate.now());
+        updateQuantityOfInvoiceProducts(invoice);
+        invoiceRepository.save(invoice);
+    }
+
+    private void updateQuantityOfInvoiceProducts(Invoice invoice) {
+
+        List<InvoiceProductDto> invoiceProductDtoList = invoiceProductService.findInvoiceProductByInvoiceId(invoice.getId());
+            invoiceProductDtoList.forEach((InvoiceProductDto invoiceProductDto)->{
+                ProductDto productDto = invoiceProductDto.getProduct();
+                Integer currentQuantityInStock = productDto.getQuantityInStock();
+                if(invoice.getInvoiceType().equals(InvoiceType.PURCHASE)){
+                    productDto.setQuantityInStock(currentQuantityInStock + invoiceProductDto.getQuantity());
+                }else{
+                    productDto.setQuantityInStock(currentQuantityInStock-invoiceProductDto.getQuantity());
+                }
+               productService.save(productDto);
+            });
+
+
+
+
+
+
+
+//        List<InvoiceProduct> invoiceProductList = invoiceProductRepository.findInvoiceProductsByInvoice(invoice);
+//        for (InvoiceProduct invoiceProduct : invoiceProductList) {
+//            Product product = invoiceProduct.getProduct();
+//            int currentQuantity = product.getQuantityInStock();
+//            if(invoice.getInvoiceType() == InvoiceType.PURCHASE) {
+//                product.setQuantityInStock(currentQuantity + invoice Product.getQuantity());
+//            }else{
+//                product.setQuantityInStock(currentQuantity - invoiceProduct.getQuantity());
+//            }
+//            productRepository.save(product);
+//        }
+    }
+
 
     private String invoiceNoGenerator(InvoiceType invoiceType) {
         Long companyId = securityService.getLoggedInUser().getCompany().getId();

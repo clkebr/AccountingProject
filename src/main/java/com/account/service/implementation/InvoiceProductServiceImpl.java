@@ -7,6 +7,8 @@ import com.account.repository.InvoiceProductRepository;
 import com.account.service.InvoiceProductService;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,27 +28,54 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
          return invoiceProductRepository.findByInvoiceId(id)
                 .stream()
-                .map(each -> mapperUtil.convertToType(each, new InvoiceProductDto()))
+                .map( (InvoiceProduct invoiceProduct) ->{
+
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
+                    invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                    return invoiceProductDto;
+
+                })
                 .collect(Collectors.toList());
+    }
+
+    private BigDecimal calculateTotal(InvoiceProductDto invoiceProductDto) {
+        return invoiceProductDto.getPrice().multiply(BigDecimal.valueOf(invoiceProductDto.getQuantity()));
     }
 
     @Override
     public List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long id) {
         return invoiceProductRepository.findAllByInvoiceId(id)
                 .stream()
-                .map(entity->mapperUtil.convertToType(entity, new InvoiceProductDto()))
+                .map( (InvoiceProduct invoiceProduct) ->{
+
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
+                    invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                    return invoiceProductDto;
+
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
     public InvoiceProductDto findInvoiceProductById(long id) {
-        return mapperUtil.convertToType(invoiceProductRepository.findById(id), new InvoiceProductDto());
-    }
+        InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProductRepository.findById(id), new InvoiceProductDto());
+        invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+        return invoiceProductDto;
 
+    }
+//todo: check invoiceProductDto´s total whether is is empty or not
     @Override
     public InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto) {
         InvoiceProduct save = invoiceProductRepository.save(mapperUtil.convertToType(invoiceProductDto, new InvoiceProduct()));
         return mapperUtil.convertToType(save, new InvoiceProductDto());
+    }
+
+    @Override
+    public void deleteInvoiceProductById(Long invoiceProductId) {
+        InvoiceProduct invoiceProduct = invoiceProductRepository.findById(invoiceProductId).orElseThrow(()-> new EntityNotFoundException("InvoiceProduct is not found"));
+        invoiceProduct.setIsDeleted(true);
+        invoiceProductRepository.save(invoiceProduct);
+
     }
 
 
