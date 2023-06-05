@@ -45,12 +45,13 @@ public class InvoiceServiceImpl implements InvoiceService {
 
     // list should be sorted by their invoice no in descending order (the latest invoices should be at the top)
     @Override
-    public List<InvoiceDto> findAllByCompany(InvoiceType purchase) {
+    public List<InvoiceDto> findAllByCompany(InvoiceType invoiceType) {
+
         Long companyId = securityService.getLoggedInUser().getCompany().getId();
 
         return invoiceRepository.findAllByCompanyId(companyId)
                 .stream()
-                .filter(invoice -> invoice.getInvoiceType().equals(InvoiceType.PURCHASE))
+                .filter(invoice -> invoice.getInvoiceType().equals(invoiceType))
                 .sorted(Comparator.comparing(Invoice::getInvoiceNo)
                         .thenComparing(Invoice::getDate).reversed())
                 .map((Invoice invoice)-> {
@@ -162,26 +163,9 @@ public class InvoiceServiceImpl implements InvoiceService {
                productService.save(productDto);
             });
 
-
-
-
-
-
-
-//        List<InvoiceProduct> invoiceProductList = invoiceProductRepository.findInvoiceProductsByInvoice(invoice);
-//        for (InvoiceProduct invoiceProduct : invoiceProductList) {
-//            Product product = invoiceProduct.getProduct();
-//            int currentQuantity = product.getQuantityInStock();
-//            if(invoice.getInvoiceType() == InvoiceType.PURCHASE) {
-//                product.setQuantityInStock(currentQuantity + invoice Product.getQuantity());
-//            }else{
-//                product.setQuantityInStock(currentQuantity - invoiceProduct.getQuantity());
-//            }
-//            productRepository.save(product);
-//        }
     }
 
-
+//todo: fix is deleted thingy
     private String invoiceNoGenerator(InvoiceType invoiceType) {
         Long companyId = securityService.getLoggedInUser().getCompany().getId();
         List<Invoice> invoiceList = invoiceRepository.findAllByCompanyIdAndInvoiceType(companyId, invoiceType);

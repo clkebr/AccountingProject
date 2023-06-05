@@ -9,7 +9,7 @@ import com.account.enums.InvoiceType;
 import java.util.List;
 
 public interface InvoiceService {
-    List<InvoiceDto> findAllByCompany(InvoiceType purchase);
+    List<InvoiceDto> findAllByCompany(InvoiceType invoiceType);
 
     List<ClientVendorDto> getAllByCompanyAndType(ClientVendorType vendor);
 
