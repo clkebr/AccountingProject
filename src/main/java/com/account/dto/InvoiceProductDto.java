@@ -19,7 +19,7 @@ public class InvoiceProductDto {
 
     private BigDecimal total;
 
-    private Integer profitLoss;
+    private BigDecimal profitLoss;
 
     private Integer remainingQty;
 

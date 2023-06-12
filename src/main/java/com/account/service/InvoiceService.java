@@ -4,6 +4,7 @@ import com.account.dto.ClientVendorDto;
 import com.account.dto.InvoiceDto;
 import com.account.dto.InvoiceProductDto;
 import com.account.enums.ClientVendorType;
+import com.account.enums.InvoiceStatus;
 import com.account.enums.InvoiceType;
 
 import java.util.List;
@@ -30,4 +31,7 @@ public interface InvoiceService {
     void removeInvoiceProductById(Long invoiceProductId);
 
     void approvePurchaseInvoice(Long id);
+
+    List<InvoiceDto> getLast3TransactionByStatus(InvoiceStatus approved);
+
 }

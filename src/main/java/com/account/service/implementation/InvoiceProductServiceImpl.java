@@ -81,6 +81,7 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
 
     }
 
+    //todo: check whether need company or not!!!
     //The table should be sorted based on invoice date in descending order
     @Override
     public List<InvoiceProductDto> findInvoiceProductByInvoiceStatus(InvoiceStatus status) {
@@ -98,6 +99,19 @@ public class InvoiceProductServiceImpl implements InvoiceProductService {
     public List<InvoiceProductDto> findInvoiceProductByInvoiceType(InvoiceType type) {
         return invoiceProductRepository.findAllByInvoiceInvoiceType(type)
                 .stream().map((InvoiceProduct invoiceProduct) -> {
+                    InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
+                    invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
+                    return invoiceProductDto;
+                }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public List<InvoiceProductDto> findAllByInvoiceTypeAndInvoiceStatusAndCompanyId(InvoiceType type,InvoiceStatus invoiceStatus, Long id) {
+        return invoiceProductRepository.findAllByInvoiceInvoiceTypeAndInvoiceInvoiceStatusAndInvoiceCompanyId(type,invoiceStatus,id)
+                .stream()
+                .sorted(Comparator.comparing(InvoiceProduct::getId).reversed())
+                .map((InvoiceProduct invoiceProduct)->{
                     InvoiceProductDto invoiceProductDto = mapperUtil.convertToType(invoiceProduct, new InvoiceProductDto());
                     invoiceProductDto.setTotal(calculateTotal(invoiceProductDto));
                     return invoiceProductDto;
