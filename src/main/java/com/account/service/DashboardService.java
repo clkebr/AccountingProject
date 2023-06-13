@@ -1,5 +1,6 @@
 package com.account.service;
 
+import com.account.dto.CurrencyDto;
 import com.account.dto.InvoiceDto;
 
 import java.math.BigDecimal;
@@ -10,4 +11,5 @@ public interface DashboardService {
     Map<String, BigDecimal> getSumOfTotal();
 
     List<InvoiceDto> getLast3Transaction();
+    CurrencyDto getCurrency();
 }

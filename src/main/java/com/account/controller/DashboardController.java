@@ -20,7 +20,7 @@ public class DashboardController {
 
         model.addAttribute("summaryNumbers",dashboardService.getSumOfTotal() );
         model.addAttribute("invoices", dashboardService.getLast3Transaction());
-//        model.addAttribute("exchangeRates",client.getCurrency());
+        model.addAttribute("exchangeRates",dashboardService.getCurrency());
 
         return "dashboard_final";
     }

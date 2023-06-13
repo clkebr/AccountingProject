@@ -1,5 +1,8 @@
 package com.account.service.implementation;
 
+import com.account.client.CurrencyClient;
+import com.account.dto.CurrencyApiResponseDto;
+import com.account.dto.CurrencyDto;
 import com.account.dto.InvoiceDto;
 import com.account.dto.InvoiceProductDto;
 import com.account.enums.InvoiceStatus;
@@ -22,10 +25,13 @@ public class DashboardServiceImpl implements DashboardService {
     private final InvoiceService invoiceService;
     private final SecurityService securityService;
 
-    public DashboardServiceImpl(InvoiceProductService invoiceProductService, InvoiceService invoiceService, SecurityService securityService) {
+    private final CurrencyClient client;
+
+    public DashboardServiceImpl(InvoiceProductService invoiceProductService, InvoiceService invoiceService, SecurityService securityService, CurrencyClient client) {
         this.invoiceProductService = invoiceProductService;
         this.invoiceService = invoiceService;
         this.securityService = securityService;
+        this.client = client;
     }
 
     @Override
@@ -42,6 +48,17 @@ public class DashboardServiceImpl implements DashboardService {
     public List<InvoiceDto> getLast3Transaction() {
 
         return invoiceService.getLast3TransactionByStatus( InvoiceStatus.APPROVED);
+    }
+
+    @Override
+    public CurrencyDto getCurrency() {
+        CurrencyApiResponseDto clientData = client.getData();
+        return CurrencyDto.builder()
+                .euro(clientData.getUsd().getEur())
+                .britishPound(clientData.getUsd().getGbp())
+                .indianRupee(clientData.getUsd().getInr())
+                .japaneseYen(clientData.getUsd().getJpy())
+                .canadianDollar(clientData.getUsd().getCad()).build();
     }
 
     private BigDecimal calculateTotalProfitLoss() {
