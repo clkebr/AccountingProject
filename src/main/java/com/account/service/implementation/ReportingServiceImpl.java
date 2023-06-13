@@ -7,6 +7,7 @@ import com.account.service.InvoiceProductService;
 import com.account.service.ReportingService;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,9 +32,9 @@ public class ReportingServiceImpl implements ReportingService {
         invoiceProductDtoList.forEach((InvoiceProductDto invoiceProductDto) -> {
                     int year = invoiceProductDto.getInvoice().getDate().getYear();
                     String month = invoiceProductDto.getInvoice().getDate().getMonth().toString();
-                    Integer profitLoss = invoiceProductDto.getProfitLoss();
+                    BigDecimal profitLoss = invoiceProductDto.getProfitLoss();
                     String timeWindow = year + " " + month;
-                    profitLossDataMap.put(timeWindow, profitLossDataMap.getOrDefault(timeWindow, 0) + profitLoss);
+                    profitLossDataMap.put(timeWindow, profitLossDataMap.getOrDefault(timeWindow, 0) + profitLoss.intValue());
 
                 });
         return profitLossDataMap;

@@ -20,4 +20,6 @@ public interface InvoiceProductService {
     List<InvoiceProductDto> findInvoiceProductByInvoiceStatus(InvoiceStatus approved);
 
     List<InvoiceProductDto> findInvoiceProductByInvoiceType(InvoiceType type);
+
+    List<InvoiceProductDto> findAllByInvoiceTypeAndInvoiceStatusAndCompanyId(InvoiceType type,InvoiceStatus invoiceStatus, Long id);
 }

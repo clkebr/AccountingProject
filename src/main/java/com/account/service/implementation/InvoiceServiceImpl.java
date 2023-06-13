@@ -149,6 +149,18 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoiceRepository.save(invoice);
     }
 
+    @Override
+    public List<InvoiceDto> getLast3TransactionByStatus(InvoiceStatus invoiceStatus) {
+        Long companyId = securityService.getLoggedInUser().getCompany().getId();
+        return invoiceRepository.findTopByCompanyIdAndInvoiceStatusOrderByDateDesc(companyId,invoiceStatus )
+                .stream().map((Invoice invoice)->{
+                    InvoiceDto invoiceDto = mapperUtil.convertToType(invoice, new InvoiceDto());
+                    invoiceDto.setTotal(getInvoiceTotalPrice(invoiceDto.getId()));
+                    return invoiceDto;
+                } )
+                .collect(Collectors.toList());
+    }
+
     private void updateQuantityOfInvoiceProducts(Invoice invoice) {
 
         List<InvoiceProductDto> invoiceProductDtoList = invoiceProductService.findInvoiceProductByInvoiceId(invoice.getId());
