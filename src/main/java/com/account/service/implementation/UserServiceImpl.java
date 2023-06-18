@@ -114,5 +114,12 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public boolean emailExist(UserDto userDto) {
+        User byUsername = userRepository.findByUsername(userDto.getUsername());
+        if (byUsername == null) return false;
+        return !byUsername.getId().equals(userDto.getId()); // user update should return false
+    }
+
 
 }
