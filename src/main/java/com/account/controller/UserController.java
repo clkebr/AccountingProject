@@ -6,7 +6,10 @@ import com.account.service.RoleService;
 import com.account.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/users")
@@ -43,8 +46,17 @@ public class UserController {
     }
 
     @PostMapping("/update/{id}")
-    public String updateUser(@PathVariable("id") Long id, @ModelAttribute UserDto userdto){
-        userService.update(userdto);
+    public String updateUser(@PathVariable("id") Long id, @Valid @ModelAttribute UserDto userDto, BindingResult result){
+        if(result.hasErrors()) return "redirect:/users/update/"+id;
+
+        boolean emailExist = userService.emailExist(userDto);
+        if (result.hasErrors() || emailExist){
+            if (emailExist) {
+                result.rejectValue("username", " ", "A user with this email already exists. Please try with different email.");
+            }
+            return "/user/user-update";
+        }
+        userService.update(userDto);
         return "redirect:/users/list";
     }
 
@@ -57,7 +69,16 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public  String create(@ModelAttribute("newUser") UserDto userDto){
+    public  String create(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result, Model model){
+        boolean emailExist = userService.emailExist(userDto);
+
+        if (result.hasErrors() || emailExist){
+            if (emailExist) {
+                result.rejectValue("username", " ", "A user with this email already exists. Please try with different email.");
+            }
+
+            return "user/user-create";
+        }
         userService.save(userDto);
 
         return "redirect:/users/list";
