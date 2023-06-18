@@ -5,7 +5,10 @@ import com.account.service.AddressService;
 import com.account.service.CompanyService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/companies")
@@ -32,10 +35,13 @@ public class CompanyController {
     }
 
     @PostMapping("/update/{id}")
-    public  String save(@PathVariable String id, @ModelAttribute("company") CompanyDto companyDto){
-        companyService.updateCompany(id,companyDto);
-        return "redirect:/companies/list";
+    public  String save(@PathVariable String id, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult result){
+
+        if (result.hasErrors()) return "/company/company-update";
+
+        companyService.updateCompany(id,companyDto); return "redirect:/companies/list";
     }
+
     @GetMapping("/deactivate/{id}")
     public  String deactivateStatus(@PathVariable Long id, Model model){
         companyService.deactivateCompanyStatus(id);
@@ -52,14 +58,17 @@ public class CompanyController {
     @GetMapping("/create")
     public  String createCompany( Model model){
         model.addAttribute("newCompany", new CompanyDto());
-        return "redirect:/companies/list";
+        return "company/company-create";
     }
-
     @PostMapping("/create")
-    public  String postCompany(@ModelAttribute("newCompany") CompanyDto companyDto){
+    public  String postCompany(@Valid @ModelAttribute("newCompany") CompanyDto companyDto, BindingResult result){
+
+        if (result.hasErrors()) return "/company/company-create";
+
         companyService.save(companyDto);
 
         return "redirect:/companies/list";
     }
+
 
 }
