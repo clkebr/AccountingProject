@@ -6,8 +6,10 @@ import com.account.service.CategoryService;
 import com.account.service.ProductService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @Controller
@@ -37,7 +39,17 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public  String postProduct(@ModelAttribute("newProduct") ProductDto productDto){
+    public  String postProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model){
+        if (productService.isProductNameExist(productDto)) {
+            bindingResult.rejectValue("name", " ", "This Product Name already exists.");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+
+            return "/product/product-create";
+        }
         productService.save(productDto);
         return "redirect:/products/list";
     }
@@ -51,7 +63,17 @@ public class ProductController {
     }
 
     @PostMapping("/update/{id}")
-    public  String save(@PathVariable Long id, @ModelAttribute("product") ProductDto productDto){
+    public  String save(@PathVariable Long id,@Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult, Model model){
+        if (productService.isProductNameExist(productDto)) {
+            bindingResult.rejectValue("name", " ", "This Product Name already exists.");
+        }
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+
+            return "/product/product-update";
+        }
         productService.updateProduct(id,productDto);
         return "redirect:/products/list";
     }

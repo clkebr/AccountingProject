@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct(Long id, ProductDto productDto) {
-        Product product = productRepository.findById(id).get();
+        Product product = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));;
         product.setProductUnit(productDto.getProductUnit());
         product.setLowLimitAlert(productDto.getLowLimitAlert());
         return mapperUtil.convertToType(productRepository.save(product),new ProductDto());
@@ -73,9 +73,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteById(Long id) {
-        Product product = productRepository.findById(id).get();
+        Product product = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));;
         product.setIsDeleted(true);
         productRepository.save(product);
+    }
+
+    @Override
+    public boolean isProductNameExist(ProductDto productDto) {
+        Company actualCompany = mapperUtil.convertToType(securityService.getLoggedInUser().getCompany(), new Company());
+        Product existingProduct = productRepository.findByNameAndCategoryCompany(productDto.getName(), actualCompany);
+        if (existingProduct == null) return false;
+        return !existingProduct.getId().equals(productDto.getId());
     }
 
 }
