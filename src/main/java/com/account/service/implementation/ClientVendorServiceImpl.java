@@ -3,6 +3,7 @@ package com.account.service.implementation;
 import com.account.dto.ClientVendorDto;
 import com.account.entity.Address;
 import com.account.entity.ClientVendor;
+import com.account.entity.Company;
 import com.account.mapper.MapperUtil;
 import com.account.repository.ClientVendorRepository;
 import com.account.service.ClientVendorService;
@@ -53,7 +54,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public void updateClientVendor(Long id, ClientVendorDto clientVendorDto) {
         clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
-        ClientVendor byId = clientVendorRepository.findById(id).get();
+        ClientVendor byId = clientVendorRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));
         byId.setAddress(mapperUtil.convertToType(clientVendorDto.getAddress(),new Address()));
         byId.setPhone(clientVendorDto.getPhone());
         byId.setClientVendorName(clientVendorDto.getClientVendorName());
@@ -64,7 +65,7 @@ public class ClientVendorServiceImpl implements ClientVendorService {
 
     @Override
     public void deleteById(Long id) {
-        ClientVendor clientVendor = clientVendorRepository.findById(id).get();
+        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));
         clientVendor.setIsDeleted(true);
         clientVendorRepository.save(clientVendor);
     }
@@ -72,6 +73,14 @@ public class ClientVendorServiceImpl implements ClientVendorService {
     @Override
     public ClientVendorDto findClientVendorById(long id) {
         return mapperUtil.convertToType(clientVendorRepository.findById(id), new ClientVendorDto());
+    }
+
+    @Override
+    public boolean companyNameExists(ClientVendorDto clientVendorDto) {
+        Company currentCompany = mapperUtil.convertToType(securityService.getLoggedInUser().getCompany(), new Company());
+        ClientVendor existingClientVendor = clientVendorRepository.findByClientVendorNameAndCompany(clientVendorDto.getClientVendorName(), currentCompany);
+        if (existingClientVendor == null) return false;
+        return !existingClientVendor.getId().equals(clientVendorDto.getId());
     }
 }
 

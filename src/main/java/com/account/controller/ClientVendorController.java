@@ -6,8 +6,10 @@ import com.account.service.AddressService;
 import com.account.service.ClientVendorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 
 @Controller
@@ -36,7 +38,21 @@ public class ClientVendorController {
     }
 
     @PostMapping("/create")
-    public  String postClientVendor(@ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto){
+    public  String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model){
+
+        boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
+        if (result.hasErrors() || isDuplicatedCompanyName) {
+
+            if (isDuplicatedCompanyName) {
+                result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
+            }
+
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+            model.addAttribute("countries", addressService.getAllCountries());
+
+            return "/clientVendor/clientVendor-create";
+        }
+
         clientVendorService.save(clientVendorDto);
         return "redirect:/clientVendors/list";
     }
@@ -50,7 +66,19 @@ public class ClientVendorController {
     }
 
     @PostMapping("/update/{id}")
-    public  String save(@PathVariable Long id, @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto){
+    public  String save(@PathVariable Long id, @Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model){
+
+        boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
+        if (result.hasErrors() || isDuplicatedCompanyName) {
+            if (isDuplicatedCompanyName) {
+                result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
+            }
+
+            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+            model.addAttribute("countries", addressService.getAllCountries());
+
+            return "/clientVendor/clientVendor-update";
+        }
         clientVendorService.updateClientVendor(id,clientVendorDto);
         return "redirect:/clientVendors/list";
     }

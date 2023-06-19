@@ -4,7 +4,10 @@ import com.account.dto.CategoryDto;
 import com.account.service.CategoryService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/categories")
@@ -29,7 +32,8 @@ public class CategoryController {
     }
 
     @PostMapping("/create")
-    public  String postCategory(@ModelAttribute("newCategory") CategoryDto categoryDto){
+    public  String postCategory(@Valid @ModelAttribute("newCategory") CategoryDto categoryDto, BindingResult result){
+        if(result.hasErrors()) return "/category/category-create";
         categoryService.saveCategory(categoryDto);
         return "redirect:/categories/list";
     }
@@ -40,7 +44,8 @@ public class CategoryController {
         return "/category/category-update";
     }
     @PostMapping("/update/{id}")
-    public  String saveCategory( @ModelAttribute("category") CategoryDto categoryDto){
+    public  String saveCategory( @Valid @ModelAttribute("category") CategoryDto categoryDto, BindingResult bindingResult){
+        if(bindingResult.hasErrors()) return "/category/category-update";
         categoryService.updateCategory(categoryDto);
         return "redirect:/categories/list";
     }
