@@ -1,5 +1,7 @@
 package com.account.dto;
 
+import com.account.entity.User;
+import com.account.validation.Unique;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +22,7 @@ public class UserDto {
     @Size(max = 50, min = 2)
     private String lastname;
 
+    @Unique(fieldName = "username",entityClass = User.class)
     @NotBlank
     @Email
     private String username;
