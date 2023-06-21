@@ -1,9 +1,10 @@
 package com.account.dto;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data @NoArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder @Getter @Setter
 public class RoleDto {
 
     private Long id;

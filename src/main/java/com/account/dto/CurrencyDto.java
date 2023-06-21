@@ -1,13 +1,15 @@
 package com.account.dto;
 
 
+import lombok.*;
 
-import lombok.Builder;
-import lombok.Data;
 import java.math.BigDecimal;
 
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class CurrencyDto {
 
