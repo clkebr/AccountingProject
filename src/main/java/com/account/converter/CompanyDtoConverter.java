@@ -1,7 +1,7 @@
 package com.account.converter;
 
-import com.account.dto.CompanyDto;
 import com.account.service.CompanyService;
+import com.account.dto.CompanyDto;
 import lombok.SneakyThrows;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Lazy;

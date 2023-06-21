@@ -2,13 +2,13 @@ package com.account.dto;
 
 import com.account.entity.User;
 import com.account.validation.Unique;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.*;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder @Getter @Setter
 public class UserDto {
 
 
@@ -45,4 +45,6 @@ public class UserDto {
     private CompanyDto company;
 
     private Boolean isOnlyAdmin;
+
+
 }

@@ -1,12 +1,9 @@
 package com.account.dto;
 
-import com.account.entity.ClientVendor;
 import com.account.enums.ClientVendorType;
+import com.account.entity.ClientVendor;
 import com.account.validation.Unique;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -18,6 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ClientVendorDto {
 
     private Long id;
