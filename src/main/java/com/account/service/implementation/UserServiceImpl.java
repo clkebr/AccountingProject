@@ -3,6 +3,7 @@ package com.account.service.implementation;
 import com.account.dto.UserDto;
 import com.account.entity.Role;
 import com.account.entity.User;
+import com.account.exception.AccountingException;
 import com.account.mapper.MapperUtil;
 import com.account.repository.UserRepository;
 import com.account.service.SecurityService;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByUsername(String username) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
         UserDto userDto = mapperUtil.convertToType(userRepository.findByUsername(username), new UserDto());
 
         if (isAdmin(userDto)) userDto.setIsOnlyAdmin(true);
@@ -116,7 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean emailExist(UserDto userDto) {
-        User byUsername = userRepository.findByUsername(userDto.getUsername());
+        User byUsername = userRepository.findByUsername(userDto.getUsername()).orElseThrow(() -> new AccountingException("User not found"));
         if (byUsername == null) return false;
         return !byUsername.getId().equals(userDto.getId()); // user update should return false
     }
