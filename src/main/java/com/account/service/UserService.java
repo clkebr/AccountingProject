@@ -7,7 +7,7 @@ import java.util.List;
 public interface UserService {
     UserDto findByUsername(String currentUsername);
 
-    List<UserDto> findAll();
+    List<UserDto> findAllFilteredUsers();
 
     UserDto findById(Long id);
 

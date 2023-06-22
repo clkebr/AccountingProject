@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping("/list")
     public String get(Model model){
-        model.addAttribute("users",userService.findAll());
+        model.addAttribute("users",userService.findAllFilteredUsers());
 
         return "/user/user-list";
     }
@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public  String create(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result, Model model){
+    public  String create(@Valid @ModelAttribute("newUser") UserDto userDto, BindingResult result){
         boolean emailExist = userService.emailExist(userDto);
 
         if (result.hasErrors() || emailExist){

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByUsername(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
-        UserDto userDto = mapperUtil.convertToType(userRepository.findByUsername(username), new UserDto());
+        UserDto userDto = mapperUtil.convertToType(user, new UserDto());
 
         if (isAdmin(userDto)) userDto.setIsOnlyAdmin(true);
 
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDto> findAllFilteredUsers() {
 
         List<User> userList;
 
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void update(UserDto dto) {
 
-        User entity = userRepository.findById(dto.getId()).get();
+        User entity = userRepository.findById(dto.getId()).orElseThrow(()->new AccountingException("user not found"));
         entity.setFirstname(dto.getFirstname());
         entity.setLastname(dto.getLastname());
         entity.setPhone(dto.getPhone());
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(Long id) {
-        User byId = userRepository.findById(id).get();
+        User byId = userRepository.findById(id).orElseThrow(()->new AccountingException("user not found"));
         byId.setIsDeleted(true);
         userRepository.save(byId);
 
