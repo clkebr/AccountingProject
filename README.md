@@ -16,7 +16,7 @@ The project is built using the Spring Boot framework, embracing the principles o
 
 *-Spring Data:* Spring Data is utilized for simplified data access and management, providing a consistent and streamlined approach to working with databases.
 
-![alt text](../../OneDrive/Dokumente/ShareX/Screenshots/2024-01/chrome_qNoCviaD5p.png)
+![alt text](src/main/resources/chrome_qNoCviaD5p.png)
 
 *-Validation:* Robust validation mechanisms are implemented to ensure data integrity and enhance the overall reliability of the application.
 
