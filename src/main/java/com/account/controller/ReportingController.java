@@ -10,21 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/reports")
 public class ReportingController {
 
-    private final ReportingService reportingService;
+	private final ReportingService reportingService;
 
-    public ReportingController(ReportingService reportingService) {
-        this.reportingService = reportingService;
-    }
+	public ReportingController(ReportingService reportingService) {
+		this.reportingService = reportingService;
+	}
 
-    @GetMapping("/stockData")
-    public String getStockData(Model model)  {
-        model.addAttribute("invoiceProducts", reportingService.getStockData());
-        return "/report/stock-report";
-    }
+	@GetMapping("/stockData")
+	public String getStockData(Model model) {
+		model.addAttribute("invoiceProducts", reportingService.getStockData());
+		return "/report/stock-report";
+	}
 
-    @GetMapping("/profitLossData")
-    public String getMonthlyProfitLossData(Model model) {
-        model.addAttribute("monthlyProfitLossDataMap", reportingService.getMonthlyProfitLossDataMap());
-        return "/report/profit-loss-report";
-    }
+	@GetMapping("/profitLossData")
+	public String getMonthlyProfitLossData(Model model) {
+		model.addAttribute("monthlyProfitLossDataMap", reportingService.getMonthlyProfitLossDataMap());
+		return "/report/profit-loss-report";
+	}
 }

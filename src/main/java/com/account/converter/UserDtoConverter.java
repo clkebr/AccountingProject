@@ -11,18 +11,18 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 public class UserDtoConverter implements Converter<String, UserDto> {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    public UserDtoConverter(@Lazy UserService userService) {
-        this.userService = userService;
-    }
+	public UserDtoConverter(@Lazy UserService userService) {
+		this.userService = userService;
+	}
 
-//    @SneakyThrows
-    @Override
-    public UserDto convert(String id){
-        if (id == null || id.isBlank())
-            return null;
-        return userService.findById(Long.parseLong(id));
-    }
+	//    @SneakyThrows
+	@Override
+	public UserDto convert(String id) {
+		if (id == null || id.isBlank())
+			return null;
+		return userService.findById(Long.parseLong(id));
+	}
 
 }

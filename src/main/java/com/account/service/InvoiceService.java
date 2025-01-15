@@ -10,28 +10,28 @@ import com.account.enums.InvoiceType;
 import java.util.List;
 
 public interface InvoiceService {
-    List<InvoiceDto> findAllByCompany(InvoiceType invoiceType);
+	List<InvoiceDto> findAllByCompany(InvoiceType invoiceType);
 
-    List<ClientVendorDto> getAllByCompanyAndType(ClientVendorType vendor);
+	List<ClientVendorDto> getAllByCompanyAndType(ClientVendorType vendor);
 
-    InvoiceDto createInvoiceDto(InvoiceType invoiceType);
+	InvoiceDto createInvoiceDto(InvoiceType invoiceType);
 
-    InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType);
+	InvoiceDto saveInvoice(InvoiceDto invoiceDto, InvoiceType invoiceType);
 
-    InvoiceDto findInvoiceById(Long id);
+	InvoiceDto findInvoiceById(Long id);
 
-    List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId);
+	List<InvoiceProductDto> getInvoiceProductsByInvoiceId(Long invoiceId);
 
-    InvoiceDto updateInvoice(InvoiceDto invoiceDto, InvoiceType type);
+	InvoiceDto updateInvoice(InvoiceDto invoiceDto, InvoiceType type);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 
-    InvoiceProductDto addInvoiceProduct(Long invoiceId, InvoiceProductDto invoiceProductDto);
+	InvoiceProductDto addInvoiceProduct(Long invoiceId, InvoiceProductDto invoiceProductDto);
 
-    void removeInvoiceProductById(Long invoiceProductId);
+	void removeInvoiceProductById(Long invoiceProductId);
 
-    void approvePurchaseInvoice(Long id);
+	void approvePurchaseInvoice(Long id);
 
-    List<InvoiceDto> getLast3TransactionByStatus(InvoiceStatus approved);
+	List<InvoiceDto> getLast3TransactionByStatus(InvoiceStatus approved);
 
 }

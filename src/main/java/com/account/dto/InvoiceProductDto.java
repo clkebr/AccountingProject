@@ -6,24 +6,26 @@ import java.math.BigDecimal;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 public class InvoiceProductDto {
-    private Long id;
+	private Long id;
 
-    private BigDecimal price ;
+	private BigDecimal price;
 
-    private Integer tax ;
+	private Integer tax;
 
-    private BigDecimal total;
+	private BigDecimal total;
 
-    private BigDecimal profitLoss;
+	private BigDecimal profitLoss;
 
-    private Integer remainingQty;
+	private Integer remainingQty;
 
-    private InvoiceDto invoice;
+	private InvoiceDto invoice;
 
-    private ProductDto product;
+	private ProductDto product;
 
-    private Integer quantity;
+	private Integer quantity;
 
 }

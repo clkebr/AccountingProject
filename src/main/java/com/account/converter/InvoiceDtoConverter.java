@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 public class InvoiceDtoConverter implements Converter<String, InvoiceDto> {
 
-    private final InvoiceService invoiceService;
+	private final InvoiceService invoiceService;
 
-    public InvoiceDtoConverter(@Lazy InvoiceService invoiceService) {
-        this.invoiceService = invoiceService;
-    }
+	public InvoiceDtoConverter(@Lazy InvoiceService invoiceService) {
+		this.invoiceService = invoiceService;
+	}
 
-    @SneakyThrows
-    @Override
-    public InvoiceDto convert(String id){
-        return invoiceService.findInvoiceById(Long.parseLong(id));
-    }
+	@SneakyThrows
+	@Override
+	public InvoiceDto convert(String id) {
+		return invoiceService.findInvoiceById(Long.parseLong(id));
+	}
 
 }

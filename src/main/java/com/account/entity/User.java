@@ -8,27 +8,24 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Data @NoArgsConstructor
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
-    @Column(unique = true)
-    private String username;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-    private String firstname;
-    private String lastname;
-    private String phone;
-
-
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    Role role;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    Company company;
-
-    private boolean enabled;
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	Role role;
+	@ManyToOne
+	@JoinColumn(name = "company_id")
+	Company company;
+	@Column(unique = true)
+	private String username;
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	private String password;
+	private String firstname;
+	private String lastname;
+	private String phone;
+	private boolean enabled;
 }

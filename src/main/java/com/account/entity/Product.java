@@ -18,15 +18,15 @@ import javax.persistence.*;
 @Where(clause = "is_deleted=false")
 public class Product extends BaseEntity {
 
-    private String name;
+	private String name;
 
-    private int quantityInStock;
+	private int quantityInStock;
 
-    private int lowLimitAlert;
+	private int lowLimitAlert;
 
-    @Enumerated(EnumType.STRING)
-    private ProductUnit productUnit;
+	@Enumerated(EnumType.STRING)
+	private ProductUnit productUnit;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Category category;
 }

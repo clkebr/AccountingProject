@@ -7,19 +7,19 @@ import com.account.enums.InvoiceType;
 import java.util.List;
 
 public interface InvoiceProductService {
-    List<InvoiceProductDto> findByInvoiceId(Long id);
+	List<InvoiceProductDto> findByInvoiceId(Long id);
 
-    List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long id);
+	List<InvoiceProductDto> findInvoiceProductByInvoiceId(Long id);
 
-    InvoiceProductDto findInvoiceProductById(long parseLong);
+	InvoiceProductDto findInvoiceProductById(long parseLong);
 
-    InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto);
+	InvoiceProductDto saveInvoiceProductDto(InvoiceProductDto invoiceProductDto);
 
-    void deleteInvoiceProductById(Long invoiceProductId);
+	void deleteInvoiceProductById(Long invoiceProductId);
 
-    List<InvoiceProductDto> findInvoiceProductByInvoiceStatus(InvoiceStatus approved);
+	List<InvoiceProductDto> findInvoiceProductByInvoiceStatus(InvoiceStatus approved);
 
-    List<InvoiceProductDto> findInvoiceProductByInvoiceType(InvoiceType type);
+	List<InvoiceProductDto> findInvoiceProductByInvoiceType(InvoiceType type);
 
-    List<InvoiceProductDto> findAllByInvoiceTypeAndInvoiceStatusAndCompanyId(InvoiceType type,InvoiceStatus invoiceStatus, Long id);
+	List<InvoiceProductDto> findAllByInvoiceTypeAndInvoiceStatusAndCompanyId(InvoiceType type, InvoiceStatus invoiceStatus, Long id);
 }

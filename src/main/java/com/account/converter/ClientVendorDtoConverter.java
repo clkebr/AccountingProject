@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 public class ClientVendorDtoConverter implements Converter<String, ClientVendorDto> {
 
-    private final ClientVendorService clientVendorService;
+	private final ClientVendorService clientVendorService;
 
-    public ClientVendorDtoConverter(@Lazy ClientVendorService clientVendorService) {
-        this.clientVendorService = clientVendorService;
-    }
+	public ClientVendorDtoConverter(@Lazy ClientVendorService clientVendorService) {
+		this.clientVendorService = clientVendorService;
+	}
 
-    @SneakyThrows
-    @Override
-    public ClientVendorDto convert(String id){
-        return clientVendorService.findClientVendorById(Long.parseLong(id));
-    }
+	@SneakyThrows
+	@Override
+	public ClientVendorDto convert(String id) {
+		return clientVendorService.findClientVendorById(Long.parseLong(id));
+	}
 
 }

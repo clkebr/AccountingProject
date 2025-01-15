@@ -13,47 +13,48 @@ import javax.validation.Valid;
 @RequestMapping("/categories")
 public class CategoryController {
 
-    private final CategoryService categoryService;
+	private final CategoryService categoryService;
 
-    public CategoryController(CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+	public CategoryController(CategoryService categoryService) {
+		this.categoryService = categoryService;
+	}
 
-    @GetMapping("/list")
-    public String getCategoryList(Model model){
-        model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
-        return "/category/category-list";
-    }
+	@GetMapping("/list")
+	public String getCategoryList(Model model) {
+		model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+		return "/category/category-list";
+	}
 
-    @GetMapping("/create")
-    public String createCategory(Model model){
-        model.addAttribute("newCategory", new CategoryDto());
-        return "/category/category-create";
-    }
+	@GetMapping("/create")
+	public String createCategory(Model model) {
+		model.addAttribute("newCategory", new CategoryDto());
+		return "/category/category-create";
+	}
 
-    @PostMapping("/create")
-    public  String postCategory(@Valid @ModelAttribute("newCategory") CategoryDto categoryDto, BindingResult result){
-        if(result.hasErrors()) return "/category/category-create";
-        categoryService.saveCategory(categoryDto);
-        return "redirect:/categories/list";
-    }
+	@PostMapping("/create")
+	public String postCategory(@Valid @ModelAttribute("newCategory") CategoryDto categoryDto, BindingResult result) {
+		if (result.hasErrors()) return "/category/category-create";
+		categoryService.saveCategory(categoryDto);
+		return "redirect:/categories/list";
+	}
 
-    @GetMapping("/update/{id}")
-    public  String updateCategory(@PathVariable Long id, Model model){
-        model.addAttribute("category", categoryService.findById(id));
-        return "/category/category-update";
-    }
-    @PostMapping("/update/{id}")
-    public  String saveCategory( @Valid @ModelAttribute("category") CategoryDto categoryDto, BindingResult bindingResult){
-        if(bindingResult.hasErrors()) return "/category/category-update";
-        categoryService.updateCategory(categoryDto);
-        return "redirect:/categories/list";
-    }
+	@GetMapping("/update/{id}")
+	public String updateCategory(@PathVariable Long id, Model model) {
+		model.addAttribute("category", categoryService.findById(id));
+		return "/category/category-update";
+	}
 
-    @GetMapping("/delete/{id}")
-    public String deleteCategory(@PathVariable("id") Long id){
-        categoryService.deleteById(id);
+	@PostMapping("/update/{id}")
+	public String saveCategory(@Valid @ModelAttribute("category") CategoryDto categoryDto, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) return "/category/category-update";
+		categoryService.updateCategory(categoryDto);
+		return "redirect:/categories/list";
+	}
 
-        return "redirect:/categories/list";
-    }
+	@GetMapping("/delete/{id}")
+	public String deleteCategory(@PathVariable("id") Long id) {
+		categoryService.deleteById(id);
+
+		return "redirect:/categories/list";
+	}
 }

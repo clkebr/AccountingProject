@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
 
-    private final DashboardService dashboardService;
+	private final DashboardService dashboardService;
 
-    public DashboardController(DashboardService dashboardService) {
-        this.dashboardService = dashboardService;
-    }
+	public DashboardController(DashboardService dashboardService) {
+		this.dashboardService = dashboardService;
+	}
 
-    @GetMapping("/dashboard")
-    public String get(Model model){
+	@GetMapping("/dashboard")
+	public String get(Model model) {
 
-        model.addAttribute("summaryNumbers",dashboardService.getSumOfTotal() );
-        model.addAttribute("invoices", dashboardService.getLast3Transaction());
-        model.addAttribute("exchangeRates",dashboardService.getCurrency());
+		model.addAttribute("summaryNumbers", dashboardService.getSumOfTotal());
+		model.addAttribute("invoices", dashboardService.getLast3Transaction());
+		model.addAttribute("exchangeRates", dashboardService.getCurrency());
 
-        return "dashboard_final";
-    }
+		return "dashboard_final";
+	}
 }

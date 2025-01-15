@@ -16,72 +16,73 @@ import java.util.Arrays;
 @RequestMapping("/products")
 public class ProductController {
 
-    private final ProductService productService;
-    private final CategoryService categoryService;
+	private final ProductService productService;
+	private final CategoryService categoryService;
 
-    public ProductController(ProductService productService, CategoryService categoryService) {
-        this.productService = productService;
-        this.categoryService = categoryService;
-    }
+	public ProductController(ProductService productService, CategoryService categoryService) {
+		this.productService = productService;
+		this.categoryService = categoryService;
+	}
 
-    @GetMapping("/list")
-    public String getClientVendorList(Model model){
-        model.addAttribute("products",productService.getProductsByCompany());
-        return "/product/product-list";
+	@GetMapping("/list")
+	public String getClientVendorList(Model model) {
+		model.addAttribute("products", productService.getProductsByCompany());
+		return "/product/product-list";
 
-    }
-    @GetMapping("/create")
-    public String createProduct(Model model){
-        model.addAttribute("newProduct", new ProductDto());
-        model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
-        model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
-        return "/product/product-create";
-    }
+	}
 
-    @PostMapping("/create")
-    public  String postProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model){
-        if (productService.isProductNameExist(productDto)) {
-            bindingResult.rejectValue("name", " ", "This Product Name already exists.");
-        }
+	@GetMapping("/create")
+	public String createProduct(Model model) {
+		model.addAttribute("newProduct", new ProductDto());
+		model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+		model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+		return "/product/product-create";
+	}
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
-            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+	@PostMapping("/create")
+	public String postProduct(@Valid @ModelAttribute("newProduct") ProductDto productDto, BindingResult bindingResult, Model model) {
+		if (productService.isProductNameExist(productDto)) {
+			bindingResult.rejectValue("name", " ", "This Product Name already exists.");
+		}
 
-            return "/product/product-create";
-        }
-        productService.save(productDto);
-        return "redirect:/products/list";
-    }
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+			model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
 
-    @GetMapping("/update/{id}")
-    public  String update(@PathVariable Long id, Model model){
-        model.addAttribute("product",productService.findProductById(id));
-        model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
-        model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
-        return "/product/product-update";
-    }
+			return "/product/product-create";
+		}
+		productService.save(productDto);
+		return "redirect:/products/list";
+	}
 
-    @PostMapping("/update/{id}")
-    public  String save(@PathVariable Long id,@Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult, Model model){
-        if (productService.isProductNameExist(productDto)) {
-            bindingResult.rejectValue("name", " ", "This Product Name already exists.");
-        }
+	@GetMapping("/update/{id}")
+	public String update(@PathVariable Long id, Model model) {
+		model.addAttribute("product", productService.findProductById(id));
+		model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+		model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+		return "/product/product-update";
+	}
 
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
-            model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
+	@PostMapping("/update/{id}")
+	public String save(@PathVariable Long id, @Valid @ModelAttribute("product") ProductDto productDto, BindingResult bindingResult, Model model) {
+		if (productService.isProductNameExist(productDto)) {
+			bindingResult.rejectValue("name", " ", "This Product Name already exists.");
+		}
 
-            return "/product/product-update";
-        }
-        productService.updateProduct(id,productDto);
-        return "redirect:/products/list";
-    }
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("categories", categoryService.findAllCategoryByCompanySorted());
+			model.addAttribute("productUnits", Arrays.asList(ProductUnit.values()));
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id){
-        productService.deleteById(id);
+			return "/product/product-update";
+		}
+		productService.updateProduct(id, productDto);
+		return "redirect:/products/list";
+	}
 
-        return "redirect:/products/list";
-    }
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		productService.deleteById(id);
+
+		return "redirect:/products/list";
+	}
 }

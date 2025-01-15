@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 public class CompanyDtoConverter implements Converter<String, CompanyDto> {
 
-    private final CompanyService companyService;
+	private final CompanyService companyService;
 
-    public CompanyDtoConverter(@Lazy CompanyService companyService) {
-        this.companyService = companyService;
-    }
+	public CompanyDtoConverter(@Lazy CompanyService companyService) {
+		this.companyService = companyService;
+	}
 
-    @SneakyThrows
-    @Override
-    public CompanyDto convert(String id){
-        return companyService.findById(Long.parseLong(id));
-    }
+	@SneakyThrows
+	@Override
+	public CompanyDto convert(String id) {
+		return companyService.findById(Long.parseLong(id));
+	}
 
 }

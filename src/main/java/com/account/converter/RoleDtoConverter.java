@@ -11,14 +11,14 @@ import org.springframework.stereotype.Component;
 @ConfigurationPropertiesBinding
 public class RoleDtoConverter implements Converter<String, RoleDto> {
 
-    private final RoleService roleService;
+	private final RoleService roleService;
 
-    public RoleDtoConverter(@Lazy RoleService roleService) {
-        this.roleService = roleService;
-    }
+	public RoleDtoConverter(@Lazy RoleService roleService) {
+		this.roleService = roleService;
+	}
 
-    @Override
-    public RoleDto convert(String id) {
-        return roleService.findById(Long.valueOf(id));
-    }
+	@Override
+	public RoleDto convert(String id) {
+		return roleService.findById(Long.valueOf(id));
+	}
 }

@@ -5,18 +5,18 @@ import com.account.dto.ClientVendorDto;
 import java.util.List;
 
 public interface ClientVendorService {
-    List<ClientVendorDto> findAllByCompany();
+	List<ClientVendorDto> findAllByCompany();
 
 
-    void save(ClientVendorDto clientVendorDto);
+	void save(ClientVendorDto clientVendorDto);
 
-    ClientVendorDto findById(Long id);
+	ClientVendorDto findById(Long id);
 
-    void updateClientVendor(Long id, ClientVendorDto clientVendorDto);
+	void updateClientVendor(Long id, ClientVendorDto clientVendorDto);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 
-    ClientVendorDto findClientVendorById(long parseLong);
+	ClientVendorDto findClientVendorById(long parseLong);
 
-    boolean companyNameExists(ClientVendorDto clientVendorDto);
+	boolean companyNameExists(ClientVendorDto clientVendorDto);
 }

@@ -18,110 +18,109 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+	private final UserRepository userRepository;
 
-    private final MapperUtil mapperUtil;
+	private final MapperUtil mapperUtil;
 
-    private final SecurityService securityService;
+	private final SecurityService securityService;
 
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.mapperUtil = mapperUtil;
-        this.securityService = securityService;
-        this.passwordEncoder = passwordEncoder;
-    }
+	public UserServiceImpl(UserRepository userRepository, MapperUtil mapperUtil, @Lazy SecurityService securityService, PasswordEncoder passwordEncoder) {
+		this.userRepository = userRepository;
+		this.mapperUtil = mapperUtil;
+		this.securityService = securityService;
+		this.passwordEncoder = passwordEncoder;
+	}
 
-    @Override
-    public UserDto findByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
-        UserDto userDto = mapperUtil.convertToType(user, new UserDto());
+	@Override
+	public UserDto findByUsername(String username) {
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
+		UserDto userDto = mapperUtil.convertToType(user, new UserDto());
 
-        if (isAdmin(userDto)) userDto.setIsOnlyAdmin(true);
+		if (isAdmin(userDto)) userDto.setIsOnlyAdmin(true);
 
-        return userDto;
+		return userDto;
 
-    }
+	}
 
-    @Override
-    public List<UserDto> findAllFilteredUsers() {
+	@Override
+	public List<UserDto> findAllFilteredUsers() {
 
-        List<User> userList;
+		List<User> userList;
 
-        if (securityService.isCurrentUserRoot()) {
-            userList = userRepository.findAllByRoleDescriptionOrderByCompanyTitleAsc("Admin");
-        } else {
-            userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
-        }
+		if (securityService.isCurrentUserRoot()) {
+			userList = userRepository.findAllByRoleDescriptionOrderByCompanyTitleAsc("Admin");
+		} else {
+			userList = userRepository.findAllByCompanyTitleOrderByRole(securityService.getLoggedUserCompany());
+		}
 
-        return userList.stream()
-                .filter(entity-> !entity.getIsDeleted())
-                .map(entity -> {
-                    UserDto dto = mapperUtil.convertToType(entity, new UserDto());
-                    dto.setIsOnlyAdmin(isAdmin(dto));
-                    return dto;
-                })
-                .collect(Collectors.toList());
+		return userList.stream()
+				.filter(entity -> !entity.getIsDeleted())
+				.map(entity -> {
+					UserDto dto = mapperUtil.convertToType(entity, new UserDto());
+					dto.setIsOnlyAdmin(isAdmin(dto));
+					return dto;
+				})
+				.collect(Collectors.toList());
 
-    }
+	}
 
-    private Boolean isAdmin(UserDto userDto) {
-        return userDto.getRole().getDescription().equals("Admin");
-    }
-
-
-
-    @Override
-    public UserDto findById(Long id) {
-
-        UserDto userDto = mapperUtil.convertToType(userRepository.findById(id), new UserDto());
-        userDto.setIsOnlyAdmin(isAdmin(userDto));
-        return userDto;
-    }
-
-    @Override
-    public void update(UserDto dto) {
-
-        User entity = userRepository.findById(dto.getId()).orElseThrow(()->new AccountingException("user not found"));
-        entity.setFirstname(dto.getFirstname());
-        entity.setLastname(dto.getLastname());
-        entity.setPhone(dto.getPhone());
-        entity.setUsername(dto.getUsername());
-        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
-        entity.setRole(mapperUtil.convertToType(dto.getRole(), new Role()));
+	private Boolean isAdmin(UserDto userDto) {
+		return userDto.getRole().getDescription().equals("Admin");
+	}
 
 
-        userRepository.save(entity);
+	@Override
+	public UserDto findById(Long id) {
 
-    }
+		UserDto userDto = mapperUtil.convertToType(userRepository.findById(id), new UserDto());
+		userDto.setIsOnlyAdmin(isAdmin(userDto));
+		return userDto;
+	}
 
-    @Override
-    public void save(UserDto userDto) {
-        User user = mapperUtil.convertToType(userDto, new User());
+	@Override
+	public void update(UserDto dto) {
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+		User entity = userRepository.findById(dto.getId()).orElseThrow(() -> new AccountingException("user not found"));
+		entity.setFirstname(dto.getFirstname());
+		entity.setLastname(dto.getLastname());
+		entity.setPhone(dto.getPhone());
+		entity.setUsername(dto.getUsername());
+		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
+		entity.setRole(mapperUtil.convertToType(dto.getRole(), new Role()));
 
-        user.setEnabled(true);
 
-        userRepository.save(user);
+		userRepository.save(entity);
 
-    }
+	}
 
-    @Override
-    public void deleteUserById(Long id) {
-        User byId = userRepository.findById(id).orElseThrow(()->new AccountingException("user not found"));
-        byId.setIsDeleted(true);
-        userRepository.save(byId);
+	@Override
+	public void save(UserDto userDto) {
+		User user = mapperUtil.convertToType(userDto, new User());
 
-    }
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-    @Override
-    public boolean emailExist(UserDto userDto) {
-        User byUsername = userRepository.findByUsername(userDto.getUsername()).orElseThrow(() -> new AccountingException("User not found"));
-        if (byUsername == null) return false;
-        return !byUsername.getId().equals(userDto.getId()); // user update should return false
-    }
+		user.setEnabled(true);
+
+		userRepository.save(user);
+
+	}
+
+	@Override
+	public void deleteUserById(Long id) {
+		User byId = userRepository.findById(id).orElseThrow(() -> new AccountingException("user not found"));
+		byId.setIsDeleted(true);
+		userRepository.save(byId);
+
+	}
+
+	@Override
+	public boolean emailExist(UserDto userDto) {
+		User byUsername = userRepository.findByUsername(userDto.getUsername()).orElseThrow(() -> new AccountingException("User not found"));
+		if (byUsername == null) return false;
+		return !byUsername.getId().equals(userDto.getId()); // user update should return false
+	}
 
 
 }

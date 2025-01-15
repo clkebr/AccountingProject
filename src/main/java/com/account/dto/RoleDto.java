@@ -4,9 +4,11 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder @Getter @Setter
+@Builder
+@Getter
+@Setter
 public class RoleDto {
 
-    private Long id;
-    private String description;
+	private Long id;
+	private String description;
 }

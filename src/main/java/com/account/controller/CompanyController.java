@@ -14,61 +14,65 @@ import javax.validation.Valid;
 @RequestMapping("/companies")
 public class CompanyController {
 
-   private final CompanyService companyService;
-   private final AddressService addressService;
+	private final CompanyService companyService;
+	private final AddressService addressService;
 
-    public CompanyController(CompanyService companyService, AddressService addressService) {
-        this.companyService = companyService;
-        this.addressService = addressService;
-    }
+	public CompanyController(CompanyService companyService, AddressService addressService) {
+		this.companyService = companyService;
+		this.addressService = addressService;
+	}
 
-    @GetMapping("/list")
-    public  String get(Model model){
-        model.addAttribute("companies", companyService.findAll());
-        return "company/company-list";
-    }
-    @GetMapping("/update/{id}")
-    public  String update(@PathVariable Long id, Model model){
-        model.addAttribute("company", companyService.findById(id));
-        model.addAttribute("countries",addressService.getAllCountries() );
-        return "company/company-update";
-    }
+	@GetMapping("/list")
+	public String get(Model model) {
+		model.addAttribute("companies", companyService.findAll());
+		return "company/company-list";
+	}
 
-    @PostMapping("/update/{id}")
-    public  String save(@PathVariable String id, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult result){
+	@GetMapping("/update/{id}")
+	public String update(@PathVariable Long id, Model model) {
+		model.addAttribute("company", companyService.findById(id));
+		model.addAttribute("countries", addressService.getAllCountries());
+		return "company/company-update";
+	}
 
-        if (result.hasErrors()) return "/company/company-update";
+	@PostMapping("/update/{id}")
+	public String save(@PathVariable String id, @Valid @ModelAttribute("company") CompanyDto companyDto, BindingResult result) {
 
-        companyService.updateCompany(id,companyDto); return "redirect:/companies/list";
-    }
+		if (result.hasErrors()) return "/company/company-update";
 
-    @GetMapping("/deactivate/{id}")
-    public  String deactivateStatus(@PathVariable Long id, Model model){
-        companyService.deactivateCompanyStatus(id);
-        model.addAttribute("companies", companyService.findAll());
-        return "company/company-list";
-    }
+		companyService.updateCompany(id, companyDto);
+		return "redirect:/companies/list";
+	}
 
-    @GetMapping("/activate/{id}")
-    public  String activateStatus(@PathVariable Long id, Model model){
-        companyService.activateCompanyStatus(id);
-        model.addAttribute("companies", companyService.findAll());
-        return "company/company-list";
-    }
-    @GetMapping("/create")
-    public  String createCompany( Model model){
-        model.addAttribute("newCompany", new CompanyDto());
-        return "company/company-create";
-    }
-    @PostMapping("/create")
-    public  String postCompany(@Valid @ModelAttribute("newCompany") CompanyDto companyDto, BindingResult result){
+	@GetMapping("/deactivate/{id}")
+	public String deactivateStatus(@PathVariable Long id, Model model) {
+		companyService.deactivateCompanyStatus(id);
+		model.addAttribute("companies", companyService.findAll());
+		return "company/company-list";
+	}
 
-        if (result.hasErrors()) return "/company/company-create";
+	@GetMapping("/activate/{id}")
+	public String activateStatus(@PathVariable Long id, Model model) {
+		companyService.activateCompanyStatus(id);
+		model.addAttribute("companies", companyService.findAll());
+		return "company/company-list";
+	}
 
-        companyService.save(companyDto);
+	@GetMapping("/create")
+	public String createCompany(Model model) {
+		model.addAttribute("newCompany", new CompanyDto());
+		return "company/company-create";
+	}
 
-        return "redirect:/companies/list";
-    }
+	@PostMapping("/create")
+	public String postCompany(@Valid @ModelAttribute("newCompany") CompanyDto companyDto, BindingResult result) {
+
+		if (result.hasErrors()) return "/company/company-create";
+
+		companyService.save(companyDto);
+
+		return "redirect:/companies/list";
+	}
 
 
 }
