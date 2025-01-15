@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface DashboardService {
-    Map<String, BigDecimal> getSumOfTotal();
+	Map<String, BigDecimal> getSumOfTotal();
 
-    List<InvoiceDto> getLast3Transaction();
-    CurrencyDto getCurrency();
+	List<InvoiceDto> getLast3Transaction();
+
+	CurrencyDto getCurrency();
 }

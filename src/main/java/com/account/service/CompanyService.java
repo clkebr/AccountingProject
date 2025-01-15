@@ -6,17 +6,17 @@ import java.util.List;
 
 public interface CompanyService {
 
-    void updateCompany(String id, CompanyDto companyDto);
+	void updateCompany(String id, CompanyDto companyDto);
 
-    void deactivateCompanyStatus(Long id);
+	void deactivateCompanyStatus(Long id);
 
-    void activateCompanyStatus(Long id);
+	void activateCompanyStatus(Long id);
 
-    List<CompanyDto> findAll();
+	List<CompanyDto> findAll();
 
-    CompanyDto findById(Long id);
+	CompanyDto findById(Long id);
 
-    CompanyDto save(CompanyDto companyDto);
+	CompanyDto save(CompanyDto companyDto);
 
-    List<CompanyDto> findCompanies();
+	List<CompanyDto> findCompanies();
 }

@@ -5,13 +5,13 @@ import com.account.dto.CategoryDto;
 import java.util.List;
 
 public interface CategoryService {
-    List<CategoryDto> findAllCategoryByCompanySorted();
+	List<CategoryDto> findAllCategoryByCompanySorted();
 
-    CategoryDto findById(Long id);
+	CategoryDto findById(Long id);
 
-    void saveCategory(CategoryDto categoryDto);
+	void saveCategory(CategoryDto categoryDto);
 
-    void updateCategory(CategoryDto categoryDto);
+	void updateCategory(CategoryDto categoryDto);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 }

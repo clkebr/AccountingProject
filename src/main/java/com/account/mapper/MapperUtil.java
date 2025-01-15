@@ -8,15 +8,15 @@ import java.lang.reflect.Type;
 @Component
 public class MapperUtil {
 
-    private final ModelMapper modelMapper;
+	private final ModelMapper modelMapper;
 
-    public MapperUtil(ModelMapper modelMapper) {
-        this.modelMapper = modelMapper;
-    }
+	public MapperUtil(ModelMapper modelMapper) {
+		this.modelMapper = modelMapper;
+	}
 
-    public <R> R convertToType(Object source, R resultClass) {
-        modelMapper.getConfiguration().setAmbiguityIgnored(true);
-        return  modelMapper.map(source, (Type) resultClass.getClass());
-    }
+	public <R> R convertToType(Object source, R resultClass) {
+		modelMapper.getConfiguration().setAmbiguityIgnored(true);
+		return modelMapper.map(source, (Type) resultClass.getClass());
+	}
 
 }

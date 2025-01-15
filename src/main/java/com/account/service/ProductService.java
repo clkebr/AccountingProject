@@ -5,20 +5,20 @@ import com.account.dto.ProductDto;
 import java.util.List;
 
 public interface ProductService {
-    List<ProductDto> findProductsByCompanyId(Long categoryId);
+	List<ProductDto> findProductsByCompanyId(Long categoryId);
 
-    List<ProductDto> getProductsByCompany();
+	List<ProductDto> getProductsByCompany();
 
-    ProductDto save(ProductDto productDto);
+	ProductDto save(ProductDto productDto);
 
-    ProductDto findProductById(Long id);
+	ProductDto findProductById(Long id);
 
-    ProductDto updateProduct(Long id, ProductDto productDto);
+	ProductDto updateProduct(Long id, ProductDto productDto);
 
-    void deleteById(Long id);
+	void deleteById(Long id);
 
 
-    boolean isProductNameExist(ProductDto productDto);
+	boolean isProductNameExist(ProductDto productDto);
 }
 
 

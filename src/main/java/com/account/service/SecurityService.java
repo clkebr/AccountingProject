@@ -6,8 +6,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface SecurityService extends UserDetailsService, AuditorAware<Long> {
 
-    UserDto getLoggedInUser();
-    String getLoggedUserCompany();
+	UserDto getLoggedInUser();
 
-    boolean isCurrentUserRoot();
+	String getLoggedUserCompany();
+
+	boolean isCurrentUserRoot();
 }

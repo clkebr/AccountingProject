@@ -13,10 +13,10 @@ import java.math.BigDecimal;
 @Builder
 public class CurrencyDto {
 
-    private BigDecimal euro;
-    private BigDecimal britishPound;
-    private BigDecimal indianRupee;
-    private BigDecimal japaneseYen;
-    private BigDecimal canadianDollar;
+	private BigDecimal euro;
+	private BigDecimal britishPound;
+	private BigDecimal indianRupee;
+	private BigDecimal japaneseYen;
+	private BigDecimal canadianDollar;
 
 }

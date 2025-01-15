@@ -16,77 +16,77 @@ import java.util.Arrays;
 @RequestMapping("/clientVendors")
 public class ClientVendorController {
 
-    private final ClientVendorService clientVendorService;
-    private final AddressService addressService;
+	private final ClientVendorService clientVendorService;
+	private final AddressService addressService;
 
-    public ClientVendorController(ClientVendorService clientVendorService, AddressService addressService) {
-        this.clientVendorService = clientVendorService;
-        this.addressService = addressService;
-    }
+	public ClientVendorController(ClientVendorService clientVendorService, AddressService addressService) {
+		this.clientVendorService = clientVendorService;
+		this.addressService = addressService;
+	}
 
-    @GetMapping("/list")
-    public String getClientVendorList(Model model){
-       model.addAttribute("clientVendors", clientVendorService.findAllByCompany());
-       return "/clientVendor/clientVendor-list";
-    }
+	@GetMapping("/list")
+	public String getClientVendorList(Model model) {
+		model.addAttribute("clientVendors", clientVendorService.findAllByCompany());
+		return "/clientVendor/clientVendor-list";
+	}
 
-    @GetMapping("/create")
-    public String createClientVendor(Model model){
-        model.addAttribute("newClientVendor", new ClientVendorDto());
-        model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
-        return "/clientVendor/clientVendor-create";
-    }
+	@GetMapping("/create")
+	public String createClientVendor(Model model) {
+		model.addAttribute("newClientVendor", new ClientVendorDto());
+		model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+		return "/clientVendor/clientVendor-create";
+	}
 
-    @PostMapping("/create")
-    public  String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model){
+	@PostMapping("/create")
+	public String postClientVendor(@Valid @ModelAttribute("newClientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model) {
 
-        boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
-        if (result.hasErrors() || isDuplicatedCompanyName) {
+		boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
+		if (result.hasErrors() || isDuplicatedCompanyName) {
 
-            if (isDuplicatedCompanyName) {
-                result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
-            }
+			if (isDuplicatedCompanyName) {
+				result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
+			}
 
-            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
-            model.addAttribute("countries", addressService.getAllCountries());
+			model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+			model.addAttribute("countries", addressService.getAllCountries());
 
-            return "/clientVendor/clientVendor-create";
-        }
+			return "/clientVendor/clientVendor-create";
+		}
 
-        clientVendorService.save(clientVendorDto);
-        return "redirect:/clientVendors/list";
-    }
+		clientVendorService.save(clientVendorDto);
+		return "redirect:/clientVendors/list";
+	}
 
-    @GetMapping("/update/{id}")
-    public  String update(@PathVariable Long id, Model model){
-        model.addAttribute("clientVendor", clientVendorService.findById(id));
-        model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
-        model.addAttribute("countries", addressService.getAllCountries());
-        return "/clientVendor/clientVendor-update";
-    }
+	@GetMapping("/update/{id}")
+	public String update(@PathVariable Long id, Model model) {
+		model.addAttribute("clientVendor", clientVendorService.findById(id));
+		model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+		model.addAttribute("countries", addressService.getAllCountries());
+		return "/clientVendor/clientVendor-update";
+	}
 
-    @PostMapping("/update/{id}")
-    public  String save(@PathVariable Long id, @Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model){
+	@PostMapping("/update/{id}")
+	public String save(@PathVariable Long id, @Valid @ModelAttribute("clientVendor") ClientVendorDto clientVendorDto, BindingResult result, Model model) {
 
-        boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
-        if (result.hasErrors() || isDuplicatedCompanyName) {
-            if (isDuplicatedCompanyName) {
-                result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
-            }
+		boolean isDuplicatedCompanyName = clientVendorService.companyNameExists(clientVendorDto);
+		if (result.hasErrors() || isDuplicatedCompanyName) {
+			if (isDuplicatedCompanyName) {
+				result.rejectValue("clientVendorName", " ", "A client/vendor with this name already exists. Please try with different name.");
+			}
 
-            model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
-            model.addAttribute("countries", addressService.getAllCountries());
+			model.addAttribute("clientVendorTypes", Arrays.asList(ClientVendorType.values()));
+			model.addAttribute("countries", addressService.getAllCountries());
 
-            return "/clientVendor/clientVendor-update";
-        }
-        clientVendorService.updateClientVendor(id,clientVendorDto);
-        return "redirect:/clientVendors/list";
-    }
+			return "/clientVendor/clientVendor-update";
+		}
+		clientVendorService.updateClientVendor(id, clientVendorDto);
+		return "redirect:/clientVendors/list";
+	}
 
-    @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Long id){
-        clientVendorService.deleteById(id);
+	@GetMapping("/delete/{id}")
+	public String delete(@PathVariable("id") Long id) {
+		clientVendorService.deleteById(id);
 
-        return "redirect:/clientVendors/list";
-    }
+		return "redirect:/clientVendors/list";
+	}
 }

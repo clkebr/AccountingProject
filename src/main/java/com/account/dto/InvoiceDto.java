@@ -10,31 +10,32 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter @Builder
+@Getter
+@Setter
+@Builder
 public class InvoiceDto {
 
-    private Long id;
+	private Long id;
 
-    private LocalDate date;
+	private LocalDate date;
 
-    private String invoiceNo;
+	private String invoiceNo;
 
-    private InvoiceStatus invoiceStatus;
+	private InvoiceStatus invoiceStatus;
 
-    private InvoiceType invoiceType;
+	private InvoiceType invoiceType;
 
-    private ClientVendorDto clientVendor;
+	private ClientVendorDto clientVendor;
 
-    private CompanyDto companyDto;
+	private CompanyDto companyDto;
 
-    private BigDecimal price ;
+	private BigDecimal price;
 
-    private BigDecimal tax;
+	private BigDecimal tax;
 
-    private  BigDecimal total ;
+	private BigDecimal total;
 
-    private List<InvoiceProductDto> invoiceProducts;
-
+	private List<InvoiceProductDto> invoiceProducts;
 
 
 }

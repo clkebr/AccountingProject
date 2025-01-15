@@ -19,56 +19,56 @@ import java.util.Optional;
 public class SecurityServiceImpl implements SecurityService {
 
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+	private final UserRepository userRepository;
+	private final UserService userService;
 
-    public SecurityServiceImpl(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
-        this.userService = userService;
-    }
-
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
-        if (user == null) {
-            throw new UsernameNotFoundException("This user does not exist");
-        }
-        return new UserPrincipal(user);
-    }
-
-    @Override
-    public UserDto getLoggedInUser() {
-        var currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userService.findByUsername(currentUsername);
-    }
-
-    @Override
-    public String getLoggedUserCompany() {
-        return this.getLoggedInUser().getCompany().getTitle();
-    }
-
-    @Override
-    public boolean isCurrentUserRoot() {
-        return getLoggedInUser().getRole().getDescription().equals("Root User");
-    }
+	public SecurityServiceImpl(UserRepository userRepository, UserService userService) {
+		this.userRepository = userRepository;
+		this.userService = userService;
+	}
 
 
-    private Long getCurrentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByUsername(username).orElseThrow(() -> new AccountingException("User not found"));
+		if (user == null) {
+			throw new UsernameNotFoundException("This user does not exist");
+		}
+		return new UserPrincipal(user);
+	}
 
-        if (authentication != null && authentication.isAuthenticated()) {
-            UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-            return principal.getId();
-        }
+	@Override
+	public UserDto getLoggedInUser() {
+		var currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userService.findByUsername(currentUsername);
+	}
 
-        return null; // Return null if the user ID is not available or not authenticated
-    }
+	@Override
+	public String getLoggedUserCompany() {
+		return this.getLoggedInUser().getCompany().getTitle();
+	}
+
+	@Override
+	public boolean isCurrentUserRoot() {
+		return getLoggedInUser().getRole().getDescription().equals("Root User");
+	}
 
 
-    @Override
-    public Optional<Long> getCurrentAuditor() {
-        Long currentUserId =this.getCurrentUserId();
-        return Optional.ofNullable(currentUserId);
-    }
+	private Long getCurrentUserId() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+		if (authentication != null && authentication.isAuthenticated()) {
+			UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+			return principal.getId();
+		}
+
+		return null; // Return null if the user ID is not available or not authenticated
+	}
+
+
+	@Override
+	public Optional<Long> getCurrentAuditor() {
+		Long currentUserId = this.getCurrentUserId();
+		return Optional.ofNullable(currentUserId);
+	}
 }

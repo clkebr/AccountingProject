@@ -8,11 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ClientVendorRepository extends JpaRepository<ClientVendor,Long> {
+public interface ClientVendorRepository extends JpaRepository<ClientVendor, Long> {
 
 
-    List<ClientVendor> findAllByCompanyTitle(String company);
+	List<ClientVendor> findAllByCompanyTitle(String company);
 
-    ClientVendor findByClientVendorNameAndCompany(String clientVendorName, Company currentCompany);
+	ClientVendor findByClientVendorNameAndCompany(String clientVendorName, Company currentCompany);
 }
 

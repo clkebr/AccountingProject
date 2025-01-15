@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository <User,Long>{
-    Optional<User> findByUsername(String username);
+public interface UserRepository extends JpaRepository<User, Long> {
+	Optional<User> findByUsername(String username);
 
-    List<User> findAllByRoleDescriptionOrderByCompanyTitleAsc(String desc);
-    List<User> findAllByCompanyTitleOrderByRole(String company);
+	List<User> findAllByRoleDescriptionOrderByCompanyTitleAsc(String desc);
 
+	List<User> findAllByCompanyTitleOrderByRole(String company);
 
 
 }

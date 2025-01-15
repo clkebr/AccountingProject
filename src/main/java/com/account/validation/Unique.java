@@ -9,10 +9,14 @@ import java.lang.annotation.*;
 @Constraint(validatedBy = UniqueValidator.class)
 @Documented
 public @interface Unique {
-    String message() default "Value must be unique";
-    Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {};
-    String fieldName();
-    Class<?> entityClass();
+	String message() default "Value must be unique";
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+
+	String fieldName();
+
+	Class<?> entityClass();
 }
 

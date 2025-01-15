@@ -15,36 +15,35 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "invoices")
 @Where(clause = "is_deleted=false")
-public class Invoice extends BaseEntity{
+public class Invoice extends BaseEntity {
 
 
+	@Column(columnDefinition = "DATE")
+	private LocalDate date;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate date;
+	private String invoiceNo;
 
-    private String invoiceNo;
+	@Enumerated(EnumType.STRING)
+	private InvoiceStatus invoiceStatus;
 
-    @Enumerated(EnumType.STRING)
-    private InvoiceStatus invoiceStatus;
-
-    @Enumerated(EnumType.STRING)
-    private InvoiceType invoiceType;
-
+	@Enumerated(EnumType.STRING)
+	private InvoiceType invoiceType;
 
 
-    @ManyToOne
-    @JoinColumn(name = "client_vendor_id")
-    private ClientVendor clientVendor;
+	@ManyToOne
+	@JoinColumn(name = "client_vendor_id")
+	private ClientVendor clientVendor;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+	@ManyToOne
+	@JoinColumn(name = "company_id")
+	private Company company;
 
-    @OneToMany(mappedBy = "invoice")
-    private List<InvoiceProduct> invoiceProducts;
+	@OneToMany(mappedBy = "invoice")
+	private List<InvoiceProduct> invoiceProducts;
 
 
 }

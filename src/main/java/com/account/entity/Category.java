@@ -9,7 +9,8 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "categories")
@@ -17,9 +18,9 @@ import javax.persistence.*;
 public class Category extends BaseEntity {
 
 
-    private String description;
+	private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
-    private Company company;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "company_id")
+	private Company company;
 }

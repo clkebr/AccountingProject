@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @FeignClient(name = "CURRENCY-CLIENT", url = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd.json")
 public interface CurrencyClient {
 
-    @GetMapping()
-    CurrencyApiResponseDto getData();
+	@GetMapping()
+	CurrencyApiResponseDto getData();
 
 }

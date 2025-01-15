@@ -5,19 +5,19 @@ import com.account.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    UserDto findByUsername(String currentUsername);
+	UserDto findByUsername(String currentUsername);
 
-    List<UserDto> findAllFilteredUsers();
+	List<UserDto> findAllFilteredUsers();
 
-    UserDto findById(Long id);
+	UserDto findById(Long id);
 
-    void update(UserDto userdto);
-
-
-    void save(UserDto userDto);
+	void update(UserDto userdto);
 
 
-    void deleteUserById(Long id);
+	void save(UserDto userDto);
 
-    boolean emailExist(UserDto userDto);
+
+	void deleteUserById(Long id);
+
+	boolean emailExist(UserDto userDto);
 }

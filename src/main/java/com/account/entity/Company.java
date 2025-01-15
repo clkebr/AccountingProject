@@ -8,23 +8,24 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Data @NoArgsConstructor
+@Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "companies")
-public class Company extends BaseEntity{
-    @Column(unique = true)
-    private String title;
+public class Company extends BaseEntity {
+	@Column(unique = true)
+	private String title;
 
-    private String phone;
+	private String phone;
 
-    private String website;
+	private String website;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "address_id")
-    private Address address;
+	@OneToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name = "address_id")
+	private Address address;
 
-    @Enumerated(EnumType.STRING)
-    private CompanyStatus companyStatus;
+	@Enumerated(EnumType.STRING)
+	private CompanyStatus companyStatus;
 
 
 }

@@ -1,4 +1,3 @@
-
 package com.account.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,26 +10,26 @@ import java.time.LocalDate;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "date",
-    "usd"
+		"date",
+		"usd"
 })
 @Data
 public class CurrencyApiResponseDto {
 
-    @JsonProperty("date")
-    private LocalDate date;
-    @JsonProperty("usd")
-    private Usd usd;
+	@JsonProperty("date")
+	private LocalDate date;
+	@JsonProperty("usd")
+	private Usd usd;
 
 
-    @Data
-    public static class Usd {
-        private BigDecimal eur;
-        private BigDecimal gbp;
-        private BigDecimal inr;
-        private BigDecimal jpy;
-        private BigDecimal cad;
+	@Data
+	public static class Usd {
+		private BigDecimal eur;
+		private BigDecimal gbp;
+		private BigDecimal inr;
+		private BigDecimal jpy;
+		private BigDecimal cad;
 
-    }
+	}
 
 }

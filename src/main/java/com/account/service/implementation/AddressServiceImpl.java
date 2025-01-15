@@ -11,40 +11,40 @@ import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceImpl implements AddressService {
-    private final AddressRepository addressRepository;
+	private final AddressRepository addressRepository;
 
-    public AddressServiceImpl(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
+	public AddressServiceImpl(AddressRepository addressRepository) {
+		this.addressRepository = addressRepository;
+	}
 
-    @Override
-    public AddressDto save(AddressDto object) {
-        return null;
-    }
+	@Override
+	public AddressDto save(AddressDto object) {
+		return null;
+	}
 
-    @Override
-    public List<AddressDto> findAll() {
-        return null;
-    }
+	@Override
+	public List<AddressDto> findAll() {
+		return null;
+	}
 
-    @Override
-    public AddressDto findById(Long aLong) {
-        return null;
-    }
+	@Override
+	public AddressDto findById(Long aLong) {
+		return null;
+	}
 
-    @Override
-    public void deleteById(Long aLong) {
+	@Override
+	public void deleteById(Long aLong) {
 
-    }
+	}
 
-    @Override
-    public void update(AddressDto object) {
+	@Override
+	public void update(AddressDto object) {
 
-    }
+	}
 
-    @Override
-    public List<String> getAllCountries() {
-        return addressRepository.findAll().stream()
-                .map(Address::getCountry).distinct().collect(Collectors.toList());
-    }
+	@Override
+	public List<String> getAllCountries() {
+		return addressRepository.findAll().stream()
+				.map(Address::getCountry).distinct().collect(Collectors.toList());
+	}
 }

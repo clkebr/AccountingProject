@@ -8,43 +8,45 @@ import javax.validation.constraints.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder @Getter @Setter
+@Builder
+@Getter
+@Setter
 public class UserDto {
 
 
-    private Long id;
+	private Long id;
 
-    @NotBlank
-    @Size(max = 50, min = 2)
-    private String firstname;
+	@NotBlank
+	@Size(max = 50, min = 2)
+	private String firstname;
 
-    @NotBlank
-    @Size(max = 50, min = 2)
-    private String lastname;
+	@NotBlank
+	@Size(max = 50, min = 2)
+	private String lastname;
 
-    @Unique(fieldName = "username",entityClass = User.class)
-    @NotBlank
-    @Email
-    private String username;
+	@Unique(fieldName = "username", entityClass = User.class)
+	@NotBlank
+	@Email
+	private String username;
 
-    @NotBlank
-    private String password;
+	@NotBlank
+	private String password;
 
 
-    @NotNull
-    private String confirmPassword;
+	@NotNull
+	private String confirmPassword;
 
-    @NotBlank
-    @Pattern(regexp = "^\\+\\d{1,3} \\(\\d{3}\\) \\d{3}-\\d{4}$")
-    private String phone;
+	@NotBlank
+	@Pattern(regexp = "^\\+\\d{1,3} \\(\\d{3}\\) \\d{3}-\\d{4}$")
+	private String phone;
 
-    @NotNull
-    private RoleDto role;
+	@NotNull
+	private RoleDto role;
 
-    @NotNull
-    private CompanyDto company;
+	@NotNull
+	private CompanyDto company;
 
-    private Boolean isOnlyAdmin;
+	private Boolean isOnlyAdmin;
 
 
 }

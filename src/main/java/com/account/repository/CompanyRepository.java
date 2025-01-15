@@ -8,12 +8,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company,Long> {
+public interface CompanyRepository extends JpaRepository<Company, Long> {
 
 
+	@Query(value = "SELECT c FROM Company c ORDER BY c.companyStatus, c.title")
+	List<Company> findAllOrderByCompanyStatus();
 
-    @Query(value = "SELECT c FROM Company c ORDER BY c.companyStatus, c.title")
-    List<Company> findAllOrderByCompanyStatus();
-
-    Company findByTitle(String title);
+	Company findByTitle(String title);
 }

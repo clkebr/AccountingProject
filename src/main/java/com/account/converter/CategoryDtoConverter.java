@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationPropertiesBinding
-public class CategoryDtoConverter  implements Converter<String, CategoryDto> {
+public class CategoryDtoConverter implements Converter<String, CategoryDto> {
 
-    private final CategoryService categoryService;
+	private final CategoryService categoryService;
 
-    public CategoryDtoConverter(@Lazy CategoryService categoryService) {
-        this.categoryService = categoryService;
-    }
+	public CategoryDtoConverter(@Lazy CategoryService categoryService) {
+		this.categoryService = categoryService;
+	}
 
-    @SneakyThrows
-    @Override
-    public CategoryDto convert(String id){
-        return categoryService.findById(Long.parseLong(id));
-    }
+	@SneakyThrows
+	@Override
+	public CategoryDto convert(String id) {
+		return categoryService.findById(Long.parseLong(id));
+	}
 
 }

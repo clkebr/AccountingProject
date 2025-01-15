@@ -16,72 +16,72 @@ import java.util.stream.Collectors;
 
 @Service
 public class ClientVendorServiceImpl implements ClientVendorService {
-    private  final ClientVendorRepository clientVendorRepository;
-    private  final MapperUtil mapperUtil;
-    private final SecurityService securityService;
+	private final ClientVendorRepository clientVendorRepository;
+	private final MapperUtil mapperUtil;
+	private final SecurityService securityService;
 
-    public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService) {
-        this.clientVendorRepository = clientVendorRepository;
-        this.mapperUtil = mapperUtil;
-        this.securityService = securityService;
-    }
+	public ClientVendorServiceImpl(ClientVendorRepository clientVendorRepository, MapperUtil mapperUtil, SecurityService securityService) {
+		this.clientVendorRepository = clientVendorRepository;
+		this.mapperUtil = mapperUtil;
+		this.securityService = securityService;
+	}
 
-    @Override
-    public List<ClientVendorDto> findAllByCompany() {
-        return clientVendorRepository.findAllByCompanyTitle(securityService.getLoggedUserCompany()).stream()
-                .map(entity -> mapperUtil.convertToType(entity,new ClientVendorDto()))
-                .sorted(Comparator.comparing(ClientVendorDto::getClientVendorName))
-                .sorted(Comparator.comparing(clientVendor -> clientVendor.getClientVendorType().name()))
-                .collect(Collectors.toList());
+	@Override
+	public List<ClientVendorDto> findAllByCompany() {
+		return clientVendorRepository.findAllByCompanyTitle(securityService.getLoggedUserCompany()).stream()
+				.map(entity -> mapperUtil.convertToType(entity, new ClientVendorDto()))
+				.sorted(Comparator.comparing(ClientVendorDto::getClientVendorName))
+				.sorted(Comparator.comparing(clientVendor -> clientVendor.getClientVendorType().name()))
+				.collect(Collectors.toList());
 
 
-    }
+	}
 
-    @Override
-    public void save(ClientVendorDto clientVendorDto) {
-        clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
-        ClientVendor clientVendor = mapperUtil.convertToType(clientVendorDto, new ClientVendor());
+	@Override
+	public void save(ClientVendorDto clientVendorDto) {
+		clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
+		ClientVendor clientVendor = mapperUtil.convertToType(clientVendorDto, new ClientVendor());
 
-                clientVendorRepository.save(clientVendor);
+		clientVendorRepository.save(clientVendor);
 
-    }
+	}
 
-    @Override
-    public ClientVendorDto findById(Long id) {
-        return mapperUtil.convertToType(clientVendorRepository.findById(id),new ClientVendorDto());
-    }
+	@Override
+	public ClientVendorDto findById(Long id) {
+		return mapperUtil.convertToType(clientVendorRepository.findById(id), new ClientVendorDto());
+	}
 
-    @Override
-    public void updateClientVendor(Long id, ClientVendorDto clientVendorDto) {
-        clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
-        ClientVendor byId = clientVendorRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));
-        byId.setAddress(mapperUtil.convertToType(clientVendorDto.getAddress(),new Address()));
-        byId.setPhone(clientVendorDto.getPhone());
-        byId.setClientVendorName(clientVendorDto.getClientVendorName());
-        byId.setClientVendorType(clientVendorDto.getClientVendorType());
-        byId.setWebsite(clientVendorDto.getWebsite());
-        clientVendorRepository.save(byId);
-    }
+	@Override
+	public void updateClientVendor(Long id, ClientVendorDto clientVendorDto) {
+		clientVendorDto.setCompany(securityService.getLoggedInUser().getCompany());
+		ClientVendor byId = clientVendorRepository.findById(id).orElseThrow(() -> new RuntimeException("Object not found"));
+		byId.setAddress(mapperUtil.convertToType(clientVendorDto.getAddress(), new Address()));
+		byId.setPhone(clientVendorDto.getPhone());
+		byId.setClientVendorName(clientVendorDto.getClientVendorName());
+		byId.setClientVendorType(clientVendorDto.getClientVendorType());
+		byId.setWebsite(clientVendorDto.getWebsite());
+		clientVendorRepository.save(byId);
+	}
 
-    @Override
-    public void deleteById(Long id) {
-        ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(()-> new RuntimeException("Object not found"));
-        clientVendor.setIsDeleted(true);
-        clientVendorRepository.save(clientVendor);
-    }
+	@Override
+	public void deleteById(Long id) {
+		ClientVendor clientVendor = clientVendorRepository.findById(id).orElseThrow(() -> new RuntimeException("Object not found"));
+		clientVendor.setIsDeleted(true);
+		clientVendorRepository.save(clientVendor);
+	}
 
-    @Override
-    public ClientVendorDto findClientVendorById(long id) {
-        return mapperUtil.convertToType(clientVendorRepository.findById(id), new ClientVendorDto());
-    }
+	@Override
+	public ClientVendorDto findClientVendorById(long id) {
+		return mapperUtil.convertToType(clientVendorRepository.findById(id), new ClientVendorDto());
+	}
 
-    @Override
-    public boolean companyNameExists(ClientVendorDto clientVendorDto) {
-        Company currentCompany = mapperUtil.convertToType(securityService.getLoggedInUser().getCompany(), new Company());
-        ClientVendor existingClientVendor = clientVendorRepository.findByClientVendorNameAndCompany(clientVendorDto.getClientVendorName(), currentCompany);
-        if (existingClientVendor == null) return false;
-        return !existingClientVendor.getId().equals(clientVendorDto.getId());
-    }
+	@Override
+	public boolean companyNameExists(ClientVendorDto clientVendorDto) {
+		Company currentCompany = mapperUtil.convertToType(securityService.getLoggedInUser().getCompany(), new Company());
+		ClientVendor existingClientVendor = clientVendorRepository.findByClientVendorNameAndCompany(clientVendorDto.getClientVendorName(), currentCompany);
+		if (existingClientVendor == null) return false;
+		return !existingClientVendor.getId().equals(clientVendorDto.getId());
+	}
 }
 
 

@@ -12,27 +12,28 @@ import java.math.BigDecimal;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
+@Getter
+@Setter
 @Table(name = "invoice_products")
 @Where(clause = "is_deleted=false")
-public class InvoiceProduct extends BaseEntity{
+public class InvoiceProduct extends BaseEntity {
 
-    private int quantity;
+	private int quantity;
 
-    private BigDecimal price;
+	private BigDecimal price;
 
-    private int tax;
+	private int tax;
 
-    private BigDecimal profitLoss;
+	private BigDecimal profitLoss;
 
-    @Column(name = "remaining_quantity")
-    private int remainingQty;
+	@Column(name = "remaining_quantity")
+	private int remainingQty;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id")
-    private Invoice invoice;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "invoice_id")
+	private Invoice invoice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id")
+	private Product product;
 }
